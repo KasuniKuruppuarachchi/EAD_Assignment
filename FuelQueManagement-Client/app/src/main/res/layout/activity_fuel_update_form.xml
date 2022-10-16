@@ -4,24 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".station_owner.StationOwnerDashboard">
+    tools:context=".station_owner.FuelUpdateForm">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Station Owner"
-        tools:layout_editor_absoluteX="115dp"
-        tools:layout_editor_absoluteY="87dp" />
-
-    <Button
-        android:id="@+id/btn_update_fuel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="96dp"
-        android:text="@string/btn_update_fuel_status"
+        android:layout_marginBottom="564dp"
+        android:text="@string/Update_Form_Label"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
