@@ -10,6 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FuelQueManagementClient">
         <activity
+            android:name=".vehicle_owner.VehicleOwnerDashboard"
+            android:exported="true" />
+        <activity
+            android:name=".station_owner.StationOwnerDashboard"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
