@@ -28,7 +28,5 @@ public class StationOwnerDashboard extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
-
 }
