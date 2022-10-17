@@ -10,6 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FuelQueManagementClient">
         <activity
+            android:name=".vehicle_owner.ExitQueue"
+            android:exported="true" />
+        <activity
+            android:name=".vehicle_owner.JoinQueue"
+            android:exported="true" />
+        <activity
+            android:name=".LoginScreen"
+            android:exported="true" />
+        <activity
+            android:name=".Registration"
+            android:exported="true" />
+        <activity
             android:name=".vehicle_owner.VehicleOwnerDashboard"
             android:exported="true" />
         <activity
