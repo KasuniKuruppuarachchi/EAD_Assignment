@@ -16,5 +16,10 @@
     <string name="arrival_date_field">Arrival Date</string>
     <string name="update_btn">Update</string>
     <string name="cancel_text">Cancel</string>
+    <string name="finish_time_field">Finish Time</string>
+    <string name="petrol">Petrol</string>
+    <string name="diesel">Diesel</string>
+    <string name="available">Available</string>
+    <string name="finish">Finish</string>
 
 </resources>
