@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FuelQueManagementClient">
         <activity
+            android:name=".vehicle_owner.SelectionStation"
+            android:exported="true" />
+        <activity
             android:name=".vehicle_owner.ExitQueue"
             android:exported="true" />
         <activity

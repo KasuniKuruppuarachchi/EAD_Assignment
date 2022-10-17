@@ -19,6 +19,7 @@ import com.example.fuelquemanagement_client.models.StationOwner;
 import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.models.VehicleOwner;
 import com.example.fuelquemanagement_client.station_owner.StationOwnerDashboard;
+import com.example.fuelquemanagement_client.vehicle_owner.SelectionStation;
 import com.example.fuelquemanagement_client.vehicle_owner.VehicleOwnerDashboard;
 
 public class LoginScreen extends AppCompatActivity implements View.OnClickListener{
@@ -44,7 +45,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                     } else {
                         Toast.makeText(LoginScreen.this, "Successfully Logged", Toast.LENGTH_LONG).show();
                         if (user.getRole().equals(Constants.VEHICLE)) {
-                            Intent i = new Intent(LoginScreen.this, VehicleOwnerDashboard.class);
+                            Intent i = new Intent(LoginScreen.this, SelectionStation.class);
                             startActivity(i);
                         } else {
                             Intent i = new Intent(LoginScreen.this, StationOwnerDashboard.class);

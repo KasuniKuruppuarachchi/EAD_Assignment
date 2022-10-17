@@ -48,7 +48,7 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
 
         //If user clicks on the back button
         if(id == android.R.id.home){
-            Intent intent = new Intent(VehicleOwnerDashboard.this,LoginScreen.class);
+            Intent intent = new Intent(VehicleOwnerDashboard.this,SelectionStation.class);
             startActivity(intent);
         }
         return true;

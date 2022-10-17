@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_color2"
     tools:context=".vehicle_owner.JoinQueue">
 
     <TextView
@@ -11,46 +12,59 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/VehicleType"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.169"
+        app:layout_constraintHorizontal_bias="0.099"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.167" />
+        app:layout_constraintVertical_bias="0.12"
+
+        />
 
     <TextView
         android:id="@+id/txt_vehicleType2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/FuelType"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.169"
+        app:layout_constraintHorizontal_bias="0.092"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.351" />
+        app:layout_constraintVertical_bias="0.343"
+
+
+        />
 
     <Spinner
         android:id="@+id/drpdwn_vehicleType"
-        android:layout_width="351dp"
-        android:layout_height="44dp"
-        android:background="@android:drawable/btn_dropdown"
+        android:background="@drawable/input_field"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_vehicleType"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.244" />
+        app:layout_constraintVertical_bias="0.244"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_width="325dp"
+        android:layout_height="35dp"
+        />
 
     <Spinner
         android:id="@+id/drpdwn_fuelType"
-        android:layout_width="351dp"
-        android:layout_height="44dp"
-        android:background="@android:drawable/btn_dropdown"
+        android:background="@drawable/input_field"
         android:spinnerMode="dropdown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt_vehicleType"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.425" />
+        app:layout_constraintVertical_bias="0.425"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_width="325dp"
+        android:layout_height="35dp"
+        />
 
     <Button
         android:id="@+id/btn_confirmJoin"

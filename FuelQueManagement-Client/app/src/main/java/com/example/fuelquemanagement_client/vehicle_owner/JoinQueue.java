@@ -30,8 +30,6 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
 
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
