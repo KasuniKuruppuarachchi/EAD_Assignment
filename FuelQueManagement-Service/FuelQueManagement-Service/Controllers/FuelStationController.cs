@@ -1,83 +1,58 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FuelQueManagement_Service.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+using System.Globalization;
 
-namespace FuelQueManagement_Service.Controllers
+namespace FuelQueManagement_Service.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class FuelStationController : ControllerBase
 {
-    public class FuelStationController : Controller
+
+    // POST: FuelStationController/Create
+    [HttpPost]
+    public FuelStationModel Create(FuelStationModel request)
     {
-        // GET: FuelStationController
-        public ActionResult Index()
-        {
-            return View();
-        }
+        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
+        var _db = Client.GetDatabase("FuelQueue");
 
-        // GET: FuelStationController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
 
-        // GET: FuelStationController/Create
-        public ActionResult Create()
+        try
         {
-            return View();
-        }
+            FuelStationModel fuelStation =  new FuelStationModel();
+            fuelStation.Name = request.Name;
+            fuelStation.Location = request.Location;
+            fuelStation.StationOwner = request.StationOwner;
+            fuelStation.LastModified = DateTime.Now;
+            fuelStation.FuelStatus = false;
+            fuelStation.Fuel = new FuelModel[0];
+            fuelStation.Queue = new QueueModel[0];
 
-        // POST: FuelStationController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            collection.InsertOneAsync(fuelStation);
 
-        // GET: FuelStationController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+            var res = collection.Find(_ => true).Limit(1).SortBy(i => i.LastModified).ToList();
 
-        // POST: FuelStationController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return res[0];
         }
+        catch
+        {
+            return null;
+        }
+    }
 
-        // GET: FuelStationController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+    [HttpGet]
+    public async Task<List<FuelStationModel>> GetFuelStations()
+    {
+        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
+        var _db = Client.GetDatabase("FuelQueue");
+        FuelStationModel fuelStation = new FuelStationModel();
 
-        // POST: FuelStationController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
+
+        var res = collection.Find(_ => true).ToList();
+        return res;
     }
 }

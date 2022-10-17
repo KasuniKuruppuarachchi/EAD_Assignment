@@ -10,14 +10,6 @@ namespace FuelQueManagement_Service
             var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
             var _db = Client.GetDatabase("FuelQueue");
 
-            var collection = _db.GetCollection<FuelStationModel>("FuelStation");
-
-            var station = new FuelStationModel{
-                Name = "PMC",
-                Location = "Makola"
-            };
-
-
         }
     }
 }
