@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FuelQueManagementClient">
         <activity
+            android:name=".station_owner.FuelUpdateForm"
+            android:exported="false" />
+        <activity
             android:name=".vehicle_owner.VehicleOwnerDashboard"
             android:exported="true" />
         <activity

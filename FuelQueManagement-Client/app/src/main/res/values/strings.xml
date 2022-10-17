@@ -9,4 +9,17 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="btn_update_fuel_status">Update Fuel Status</string>
+    <string name="update_form_label">Fuel Update Form</string>
+    <string name="fuel_amount_field">Fuel Amount in Liters</string>
+    <string name="arrival_time_field">Arrival Time</string>
+    <string name="arrival_date_field">Arrival Date</string>
+    <string name="update_btn">Update</string>
+    <string name="cancel_text">Cancel</string>
+    <string name="finish_time_field">Finish Time</string>
+    <string name="petrol">Petrol</string>
+    <string name="diesel">Diesel</string>
+    <string name="available">Available</string>
+    <string name="finish">Finish</string>
+
 </resources>
