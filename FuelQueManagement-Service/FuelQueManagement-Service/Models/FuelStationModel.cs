@@ -10,8 +10,8 @@ public class FuelStationModel
     public string? Id { get; set; }
     public string Name { get; set; }
     public string Location { get; set; }
-    public FuelModel[] Fuel { get; set; }
-    public QueueModel[] Queue { get; set; }
+    public FuelModel[]? Fuel { get; set; }
+    public QueueModel[]? Queue { get; set; }
     public string StationOwner { get; set; }
     public bool FuelStatus { get; set; }
     public DateTime? LastModified { get; set; }
