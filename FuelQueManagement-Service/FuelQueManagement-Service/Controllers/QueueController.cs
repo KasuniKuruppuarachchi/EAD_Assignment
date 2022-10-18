@@ -1,83 +1,52 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FuelQueManagement_Service.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace FuelQueManagement_Service.Controllers
 {
     public class QueueController : Controller
     {
-        // GET: QueueController
-        public ActionResult Index()
-        {
-            return View();
-        }
 
-        // GET: QueueController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: QueueController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
 
         // POST: QueueController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<FuelStationModel> Create(QueueModel request)
         {
+            var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
+            var _db = Client.GetDatabase("FuelQueue");
+
+            IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
+
             try
             {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                QueueModel queueModel = new QueueModel();
+                queueModel.Id = ObjectId.GenerateNewId().ToString();
+                queueModel.VehicleType = request.VehicleType;
+                queueModel.VehicleOwner = request.VehicleOwner;
+                queueModel.StationsId = request.StationsId;
+                queueModel.LastModified = DateTime.Now;
 
-        // GET: QueueController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+                var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, request.StationsId);
 
-        // POST: QueueController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+                var multiUpdateDefinition = Builders<FuelStationModel>.Update
+                    .Push(u => u.Queue, queueModel);
 
-        // GET: QueueController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+                var result = await collection.UpdateOneAsync(firstStationFilter, multiUpdateDefinition);
 
-        // POST: QueueController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
+                //var results = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
+                var results = collection.Find(i => i.Id == request.StationsId).ToList();
+
+                return results[0];
+
             }
-            catch
+            catch (Exception e)
             {
-                return View();
+                Console.WriteLine(e.ToString());
+                return null;
             }
         }
     }
+
 }
