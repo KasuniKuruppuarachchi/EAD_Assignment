@@ -203,7 +203,7 @@
         android:id="@+id/btn_update_fuel"
         android:layout_width="150dp"
         android:layout_height="70dp"
-        android:text="@string/btn_update_fuel_status"
+        android:text="@string/btn_fuel_arrival"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

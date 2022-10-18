@@ -1,12 +1,15 @@
 package com.example.fuelquemanagement_client.station_owner;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,7 +29,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.R;
@@ -36,9 +38,6 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     private TextView tv_arrival_date, tv_arrival_time;
@@ -46,7 +45,6 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
     private EditText et_fuel_amount;
     private Spinner sp_fuel_type;
     private Button btn_update;
-    private RequestQueue requestQueue;
     private String selectedType;
 
     @Override
@@ -56,7 +54,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
 
         // App Bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Update Fuel Status");
+        getSupportActionBar().setTitle("Update Fuel Arrival");
 
         et_fuel_amount = findViewById(R.id.editTextFuelAmount);
         tv_arrival_date = findViewById(R.id.tv_ArrivalDate);
@@ -186,5 +184,17 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        //If user clicks on the back button
+        if(id == android.R.id.home){
+            Intent intent = new Intent(FuelUpdateForm.this, StationOwnerDashboard.class);
+            startActivity(intent);
+        }
+        return true;
     }
 }
