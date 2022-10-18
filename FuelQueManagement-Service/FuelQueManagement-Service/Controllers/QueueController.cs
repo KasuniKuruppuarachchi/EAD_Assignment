@@ -6,6 +6,8 @@ using MongoDB.Driver;
 
 namespace FuelQueManagement_Service.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class QueueController : Controller
     {
 

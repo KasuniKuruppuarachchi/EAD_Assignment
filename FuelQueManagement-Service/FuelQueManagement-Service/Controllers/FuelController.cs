@@ -27,6 +27,8 @@ public class FuelController : ControllerBase
             fuelModel.Id = ObjectId.GenerateNewId().ToString();
             fuelModel.Type = request.Type.ToString();
             fuelModel.Amount = request.Amount;
+            fuelModel.Date = request.Date;
+            fuelModel.Time = request.Time;
             fuelModel.LastModified = DateTime.Now;
             fuelModel.StationsId = request.StationsId ?? null;
 
