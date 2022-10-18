@@ -34,7 +34,7 @@ public class FuelStationController : ControllerBase
 
             collection.InsertOneAsync(fuelStation);
 
-            var res = collection.Find(_ => true).Limit(1).SortBy(i => i.LastModified).ToList();
+            var res = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
 
             return res[0];
         }
@@ -55,5 +55,75 @@ public class FuelStationController : ControllerBase
 
         var res = collection.Find(_ => true).ToList();
         return res;
+    }
+
+    [HttpPost]
+    [Route("UpdateDieselStatus")]
+    public async Task<FuelStationModel> UpdateDieselStatus(bool status, string id)
+    {
+        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
+        var _db = Client.GetDatabase("FuelQueue");
+        FuelStationModel fuelStation = new FuelStationModel();
+
+        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
+
+
+            if(status == false)
+            {
+                fuelStation.PetrolStatus = true;
+            }
+            else
+            {
+                fuelStation.PetrolStatus = false;
+            }
+   
+
+        var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, id);
+
+        var updateNameDefinition = Builders<FuelStationModel>.Update
+            .Set(u => u.DieselStatus, fuelStation.DieselStatus);
+
+        var updateNameResult = await collection
+            .UpdateOneAsync(firstStationFilter,
+            updateNameDefinition);
+
+        var res = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
+
+        return res[0];
+
+    }
+
+    [HttpPost]
+    [Route("UpdatePetrolStatus")]
+    public async Task<FuelStationModel> UpdatePetrolStatus(bool status, string id)
+    {
+        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
+        var _db = Client.GetDatabase("FuelQueue");
+        FuelStationModel fuelStation = new FuelStationModel();
+
+        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
+
+
+            if (status == false)
+            {
+                fuelStation.PetrolStatus = true;
+            }
+            else
+            {
+                fuelStation.PetrolStatus = false;
+            }
+
+        var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, id);
+
+        var updateNameDefinition = Builders<FuelStationModel>.Update
+            .Set(u => u.PetrolStatus, fuelStation.PetrolStatus);
+
+        var updateNameResult = await collection
+            .UpdateOneAsync(firstStationFilter,
+            updateNameDefinition);
+
+        var res = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
+
+        return res[0];
     }
 }
