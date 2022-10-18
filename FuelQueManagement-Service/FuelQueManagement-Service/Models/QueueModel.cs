@@ -8,9 +8,10 @@ namespace FuelQueManagement_Service.Models
 
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId Id { get; set; }
+        public string? Id { get; set; }
         public string VehicleType { get; set; }
         public int VehicleOwner { get; set; }
+        public string? StationsId { get; set; }
         public DateTime? LastModified { get; set; }
 
         public QueueModel(string vehicleType, int owner, DateTime? lastModified)
