@@ -26,6 +26,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.database.DatabaseHelper;
 import com.example.fuelquemanagement_client.database.InputValidatorHelper;
+import com.example.fuelquemanagement_client.models.Fuel;
+import com.example.fuelquemanagement_client.models.FuelStation;
 import com.example.fuelquemanagement_client.models.StationOwner;
 import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.models.VehicleOwner;
@@ -197,24 +199,91 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-    private void postDataUsingVolley(String stationName, String locationName, String stationOwnerId) {
+//    private void postDataUsingVolley(String stationName, String locationName, String stationOwnerId) {
+//        try {
+//            RequestQueue requestQueue = Volley.newRequestQueue(this);
+//
+//
+//            String[] arr = new String[0];
+//
+//            String URL = "http://192.168.8.118:5000/Fuel";
+//            JSONObject jsonBody = new JSONObject();
+//            jsonBody.put("id", null);
+//            jsonBody.put("type", "Diesel");
+//            jsonBody.put("amount", 10);
+//            jsonBody.put("date", "date");
+//            jsonBody.put("time", "time");
+//            jsonBody.put("stationsId", "634da9932f4682566f56114d");
+//            jsonBody.put("lastModified", "634da9932f4682566f56114d");
+//            final String mRequestBody = jsonBody.toString();
+//
+//            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+//                @Override
+//                public void onResponse(String response) {
+//                    Log.i("LOG_VOLLEY", response);
+//                }
+//            }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                    Log.e("LOG_VOLLEY", error.toString());
+//                    Log.e("LOG_VOLLEY", error.getLocalizedMessage());
+//                }
+//            }) {
+//                @Override
+//                public String getBodyContentType() {
+//                    return "application/json; charset=utf-8";
+//                }
+//
+//                @Override
+//                public byte[] getBody() throws AuthFailureError {
+//                    try {
+//                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+//                    } catch (UnsupportedEncodingException uee) {
+//                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+//                        return null;
+//                    }
+//                }
+//
+//                @Override
+//                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+//                    String responseString = "";
+//                    if (response != null) {
+//
+//                        responseString = String.valueOf(response.statusCode);
+//
+//                    }
+//                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+//                }
+//            };
+//
+//            System.out.println("StringRequest" + stringRequest);
+//            requestQueue.add(stringRequest);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+    private void postDataUsingVolley(String stationName, String locationName, String stationOwnerId){
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-
             String[] arr = new String[0];
 
+            System.out.println("stationName"+ stationName);
+            System.out.println("locationName"+ locationName);
+            System.out.println("stationOwnerId"+ stationOwnerId);
             String URL = "http://192.168.8.118:5000/FuelStation";
-            JSONObject jsonBody = new JSONObject();
-            jsonBody.put("id", null);
-            jsonBody.put("name", stationName);
-            jsonBody.put("location", locationName);
-            jsonBody.put("fuel", "");
-            jsonBody.put("queue", "");
-            jsonBody.put("stationOwner", stationOwnerId);
-            jsonBody.put("fuelStatus", false);
-            jsonBody.put("lastModified", null);
-            final String mRequestBody = jsonBody.toString();
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", null);
+            jsonObject.put("name", stationName);
+            jsonObject.put("location", locationName);
+            //jsonObject.put("fuel", new Fuel[0]);
+            //jsonObject.put("queue", new Fuel[0]);
+            jsonObject.put("stationOwner", stationOwnerId);
+            jsonObject.put("fuelStatus", false);
+            jsonObject.put("lastModified", null);
+            final String mRequestBody = jsonObject.toString();
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
                 @Override
@@ -225,7 +294,6 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("LOG_VOLLEY", error.toString());
-                    Log.e("LOG_VOLLEY", error.getLocalizedMessage());
                 }
             }) {
                 @Override
@@ -259,5 +327,54 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
+
+
+//    public void postDataUsingVolley(String stationName, String locationName, String stationOwnerId){
+//        JsonObjectRequest
+//                jsonObjReq
+//                = new JsonObjectRequest(
+//                Request.Method.POST,
+//                "http://192.168.8.118:5000/FuelStation",
+//                null,
+//                new Response.Listener() {
+//
+//                    @Override
+//                    public void onResponse(JSONObject response)
+//                    {
+//                        Log.d("api", response.toString());
+//
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//
+//                    @Override
+//                    public void onErrorResponse(VolleyError error)
+//                    {
+//                        VolleyLog.d(TAG, "Error: "
+//                                + error.getMessage());
+//                        pDialog.hide();
+//                    }
+//                }) {
+//
+//            @Override
+//            protected Map getParams()
+//            {
+//                Map params = new HashMap();
+//                params.put("name", "Androidhive");
+//                params.put("email", "abc@androidhive.info");
+//                params.put("password", "password123");
+//
+//                return params;
+//            }
+//
+//        };
+//
+//        AppController.getInstance()
+//                .addToRequestQueue(jsonObjReq, tag_json_obj);
+//
+//    }
+
+
 }
