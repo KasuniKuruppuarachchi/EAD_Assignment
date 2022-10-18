@@ -27,7 +27,8 @@ public class FuelStationController : ControllerBase
             fuelStation.Location = request.Location;
             fuelStation.StationOwner = request.StationOwner;
             fuelStation.LastModified = DateTime.Now;
-            fuelStation.FuelStatus = false;
+            fuelStation.DieselStatus = false;
+            fuelStation.PetrolStatus = false;
             fuelStation.Fuel = new FuelModel[0];
             fuelStation.Queue = new QueueModel[0];
 
