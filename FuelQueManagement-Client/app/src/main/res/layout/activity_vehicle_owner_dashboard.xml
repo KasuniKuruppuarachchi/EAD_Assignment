@@ -319,6 +319,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_petrolStatus"
                 android:layout_width="187dp"
                 android:layout_height="84dp"
                 app:cardBackgroundColor="@android:color/holo_green_light">
@@ -329,7 +330,7 @@
                     android:outlineAmbientShadowColor="@android:color/holo_green_light">
 
                     <TextView
-                        android:id="@+id/textView13"
+                        android:id="@+id/txt_petrolStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -364,6 +365,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/card_dieselStatus"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:cardBackgroundColor="@android:color/holo_red_light">
@@ -373,7 +375,7 @@
                     android:layout_height="84dp">
 
                     <TextView
-                        android:id="@+id/textView15"
+                        android:id="@+id/txt_dieselStatus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"

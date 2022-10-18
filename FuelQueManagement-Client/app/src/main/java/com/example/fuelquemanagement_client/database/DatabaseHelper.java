@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.StationOwner;
 import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.models.VehicleOwner;
@@ -128,6 +129,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         return user;
+    }
+
+    public String getLastStationOwnerId(){
+        String[] selectionArgs = new String[]{ROLE,Constants.STATION};
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT * FROM " + USER_TABLE ;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToLast();
+        int id = cursor.getInt(0);
+
+        return String.valueOf(id);
+
     }
 
 }

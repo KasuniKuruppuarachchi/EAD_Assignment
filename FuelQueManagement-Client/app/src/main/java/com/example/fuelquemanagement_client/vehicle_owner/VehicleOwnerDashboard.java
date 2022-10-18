@@ -2,21 +2,29 @@ package com.example.fuelquemanagement_client.vehicle_owner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.fuelquemanagement_client.LoginScreen;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.Registration;
 import com.example.fuelquemanagement_client.constants.Constants;
+import com.example.fuelquemanagement_client.models.FuelStation;
 
 public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnJoinQueue;
+    private FuelStation fuelStation;
+    private TextView txtPetrolStatus, txtDieselStatus;
+    private CardView cardPetrolStatus, cardDieselStatus;
 
     @Override
     public void onClick(View view) {
@@ -30,15 +38,40 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
         }
     }
 
+
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vehicle_owner_dashboard);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Vehicle Owner Dashboard - Kaduwela Station");
+        // To retrieve object in second Activity
+        fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
+        getSupportActionBar().setTitle(fuelStation.getStationName() + " - " + fuelStation.getLocation());
 
         btnJoinQueue = findViewById(R.id.btn_join);
         btnJoinQueue.setOnClickListener(this);
+
+        txtPetrolStatus = findViewById(R.id.txt_petrolStatus);
+        txtDieselStatus = findViewById(R.id.txt_dieselStatus);
+
+        cardPetrolStatus = findViewById(R.id.card_petrolStatus);
+        cardDieselStatus = findViewById(R.id.card_dieselStatus);
+
+        if(fuelStation.isFuelStatus()){
+            txtPetrolStatus.setText("Available");
+            txtDieselStatus.setText("Available");
+            cardPetrolStatus.setCardBackgroundColor(Color.parseColor("#ff99cc00"));
+            cardDieselStatus.setCardBackgroundColor(Color.parseColor("#ff99cc00"));
+        }else{
+            txtPetrolStatus.setText("Finished");
+            txtDieselStatus.setText("Finished");
+            cardPetrolStatus.setCardBackgroundColor(Color.parseColor("#ffff4444"));
+            cardDieselStatus.setCardBackgroundColor(Color.parseColor("#ffff4444"));
+        }
+
+
+
     }
 
     @Override

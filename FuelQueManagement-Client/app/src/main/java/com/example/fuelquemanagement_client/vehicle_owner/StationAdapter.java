@@ -1,6 +1,7 @@
 package com.example.fuelquemanagement_client.vehicle_owner;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.annotation.Nullable;
 
 
 import com.example.fuelquemanagement_client.R;
+import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.FuelStation;
 
 import java.util.List;
@@ -54,6 +56,7 @@ public class StationAdapter extends ArrayAdapter<FuelStation>{
 
                 //Reload the same interface after delete a task
                 Intent myIntent = new Intent(context,VehicleOwnerDashboard.class);
+                myIntent.putExtra(Constants.STATION, station);
                 context.startActivity(myIntent);
 
             }

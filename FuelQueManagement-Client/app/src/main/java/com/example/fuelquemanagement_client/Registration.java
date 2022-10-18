@@ -5,12 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.database.DatabaseHelper;
 import com.example.fuelquemanagement_client.database.InputValidatorHelper;
@@ -18,6 +30,15 @@ import com.example.fuelquemanagement_client.models.StationOwner;
 import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.models.VehicleOwner;
 import com.example.fuelquemanagement_client.vehicle_owner.VehicleOwnerDashboard;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener {
 
@@ -139,7 +160,14 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     public User addStationUser() {
         user = new User(-1, edFullName.getText().toString(), edUserName.getText().toString(), edLocation.getText().toString(), edStationName.getText().toString(), edPassword.getText().toString(), Constants.STATION);
         boolean success = databaseHelper.addUserRecord(user);
+
+
+        // calling a method to post the data and passing our name and job.
+       // postDataUsingVolley(edStationName.getText().toString(), edLocation.getText().toString());
         if (success) {
+            String id = databaseHelper.getLastStationOwnerId();
+            System.out.println("Last Owner Id:"+id);
+            postDataUsingVolley( edStationName.getText().toString(), edLocation.getText().toString(), id);
             Toast.makeText(this, "Successfully Registered", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Registration.this, LoginScreen.class);
             startActivity(i);
@@ -167,5 +195,69 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 //
 //        }
         return true;
+    }
+
+    private void postDataUsingVolley(String stationName, String locationName, String stationOwnerId) {
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+
+            String[] arr = new String[0];
+
+            String URL = "http://192.168.8.118:5000/FuelStation";
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("id", null);
+            jsonBody.put("name", stationName);
+            jsonBody.put("location", locationName);
+            jsonBody.put("fuel", "");
+            jsonBody.put("queue", "");
+            jsonBody.put("stationOwner", stationOwnerId);
+            jsonBody.put("fuelStatus", false);
+            jsonBody.put("lastModified", null);
+            final String mRequestBody = jsonBody.toString();
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("LOG_VOLLEY", response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("LOG_VOLLEY", error.toString());
+                    Log.e("LOG_VOLLEY", error.getLocalizedMessage());
+                }
+            }) {
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                        return null;
+                    }
+                }
+
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    String responseString = "";
+                    if (response != null) {
+
+                        responseString = String.valueOf(response.statusCode);
+
+                    }
+                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                }
+            };
+
+            requestQueue.add(stringRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
