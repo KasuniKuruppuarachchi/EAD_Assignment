@@ -27,6 +27,7 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
 
     private Spinner dropdownVehicleType, dropdownFuelType;
     private Button btnConfirmJoin;
+    private String vehicle;
 
 
 
@@ -44,6 +45,18 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
         dropdownVehicleType.setAdapter(adapterVehicleType);
         dropdownVehicleType.setOnItemSelectedListener(this);
 
+        dropdownVehicleType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
+                vehicle = (String) arg0.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+        });
         dropdownFuelType = (Spinner) findViewById(R.id.drpdwn_fuelType);
         ArrayAdapter<CharSequence> adapterFuelType = ArrayAdapter.createFromResource(this,
                 R.array.fuel_array, android.R.layout.simple_spinner_item);
@@ -65,6 +78,8 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirmJoin:
+                System.out.println("Vehicle"+vehicle);
+
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 Intent i = new Intent(JoinQueue.this, ExitQueue.class);

@@ -33,6 +33,7 @@ import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.models.VehicleOwner;
 import com.example.fuelquemanagement_client.vehicle_owner.VehicleOwnerDashboard;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -289,6 +290,14 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onResponse(String response) {
                     Log.i("LOG_VOLLEY", response);
+                    try {
+                        System.out.println("Inside"+   response);
+                        JSONObject singleObject = new JSONObject(response);
+                        System.out.println("Inside" +   singleObject);
+                        System.out.println("Inside" +   singleObject.getString("name"));
+                    }catch (JSONException e){
+
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override

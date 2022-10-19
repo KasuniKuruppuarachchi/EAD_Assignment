@@ -1,6 +1,8 @@
 package com.example.fuelquemanagement_client.models;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private int id;
     private String fName, username,location, stationName, password,role;
 

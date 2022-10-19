@@ -19,8 +19,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.SSL.RetrofitClient;
+import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.Fuel;
 import com.example.fuelquemanagement_client.models.FuelStation;
+import com.example.fuelquemanagement_client.models.User;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -49,7 +51,7 @@ public class SelectionStation extends AppCompatActivity {
     private ListView stationView;
     private ArrayList<FuelStation> stations;
     private RequestQueue mRequestQueue;
-    private ProgressDialog pd;
+    private User loggedUser;
     String api = "http://192.168.8.118:5000/FuelStation";
     //String api = "https://jsonplaceholder.typicode.com/photos";
 
@@ -61,6 +63,8 @@ public class SelectionStation extends AppCompatActivity {
         setContentView(R.layout.activity_selection_station);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Select Nearest Station");
+
+        loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
 
         stationView = (ListView)findViewById(R.id.idStationView);
         stations = new ArrayList<FuelStation>();

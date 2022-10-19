@@ -46,6 +46,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(LoginScreen.this, "Successfully Logged", Toast.LENGTH_LONG).show();
                         if (user.getRole().equals(Constants.VEHICLE)) {
                             Intent i = new Intent(LoginScreen.this, SelectionStation.class);
+                            i.putExtra(Constants.LOGGED_USER, user);
                             startActivity(i);
                         } else {
                             Intent i = new Intent(LoginScreen.this, StationOwnerDashboard.class);
