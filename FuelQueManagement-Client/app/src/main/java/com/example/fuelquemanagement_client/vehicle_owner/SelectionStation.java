@@ -64,8 +64,6 @@ public class SelectionStation extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Select Nearest Station");
 
-        loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
-
         stationView = (ListView)findViewById(R.id.idStationView);
         stations = new ArrayList<FuelStation>();
         loadStations();
@@ -90,7 +88,7 @@ public class SelectionStation extends AppCompatActivity {
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
                        // textView.setText("Response is: " + response.substring(0,500));
-                        System.out.println("Response is: " + response.substring(0,500));
+                   //     System.out.println("Response is: " + response.substring(0,500));
                         try {
                             JSONArray array = new JSONArray(response);
                             int length = array.length();
@@ -103,14 +101,16 @@ public class SelectionStation extends AppCompatActivity {
                                         singleObject.getString("location"),
                                         singleObject.getString("stationOwner"),
                                         singleObject.getString("lastModified"),
-                                        singleObject.getBoolean("fuelStatus")
+                                        singleObject.getBoolean("dieselStatus"),
+                                        singleObject.getBoolean("petrolStatus")
                                 );
                                 stations.add(fuelStation);
                                 Log.e("api", "onResponse: "+   stations.size());
                             }
 
                             Log.e("api", "onResponse: "+stations.size());
-                            StationAdapter adapter = new StationAdapter(SelectionStation.this , R.layout.single_station, stations);
+                            loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
+                            StationAdapter adapter = new StationAdapter(SelectionStation.this , R.layout.single_station, stations,loggedUser);
                             stationView.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();

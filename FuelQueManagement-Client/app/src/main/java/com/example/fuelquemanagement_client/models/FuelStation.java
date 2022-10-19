@@ -8,7 +8,7 @@ public class FuelStation implements Serializable {
 
     private String id;
     private String stationName, location, stationOwner, lastModified;
-    private boolean fuelStatus;
+    private boolean dieselStatus, petrolStatus;
 
     public FuelStation() {
     }
@@ -19,13 +19,14 @@ public class FuelStation implements Serializable {
         this.location = location;
     }
 
-    public FuelStation(String id, String stationName, String location, String stationOwner, String lastModified, boolean fuelStatus) {
+    public FuelStation(String id, String stationName, String location, String stationOwner, String lastModified, boolean dieselStatus, boolean petrolStatus) {
         this.id = id;
         this.stationName = stationName;
         this.location = location;
         this.stationOwner = stationOwner;
         this.lastModified = lastModified;
-        this.fuelStatus = fuelStatus;
+        this.dieselStatus = dieselStatus;
+        this.petrolStatus = petrolStatus;
     }
 
     public String getId() {
@@ -78,11 +79,19 @@ public class FuelStation implements Serializable {
         this.lastModified = lastModified;
     }
 
-    public boolean isFuelStatus() {
-        return fuelStatus;
+    public boolean isDieselStatus() {
+        return dieselStatus;
     }
 
-    public void setFuelStatus(boolean fuelStatus) {
-        this.fuelStatus = fuelStatus;
+    public void setDieselStatus(boolean dieselStatus) {
+        this.dieselStatus = dieselStatus;
+    }
+
+    public boolean isPetrolStatus() {
+        return petrolStatus;
+    }
+
+    public void setPetrolStatus(boolean petrolStatus) {
+        this.petrolStatus = petrolStatus;
     }
 }

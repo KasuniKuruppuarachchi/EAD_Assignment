@@ -282,7 +282,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
             //jsonObject.put("fuel", new Fuel[0]);
             //jsonObject.put("queue", new Fuel[0]);
             jsonObject.put("stationOwner", stationOwnerId);
-            jsonObject.put("fuelStatus", false);
+            jsonObject.put("dieselStatus", false);
+            jsonObject.put("petrolStatus", false);
             jsonObject.put("lastModified", null);
             final String mRequestBody = jsonObject.toString();
 

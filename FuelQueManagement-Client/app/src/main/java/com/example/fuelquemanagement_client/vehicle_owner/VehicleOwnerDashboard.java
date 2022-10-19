@@ -18,11 +18,13 @@ import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.Registration;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.FuelStation;
+import com.example.fuelquemanagement_client.models.User;
 
 public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnJoinQueue;
     private FuelStation fuelStation;
+    private User loggedUser;
     private TextView txtPetrolStatus, txtDieselStatus;
     private CardView cardPetrolStatus, cardDieselStatus;
 
@@ -58,18 +60,23 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
         cardPetrolStatus = findViewById(R.id.card_petrolStatus);
         cardDieselStatus = findViewById(R.id.card_dieselStatus);
 
-        if(fuelStation.isFuelStatus()){
-            txtPetrolStatus.setText("Available");
+        if(fuelStation.isDieselStatus()){
             txtDieselStatus.setText("Available");
-            cardPetrolStatus.setCardBackgroundColor(Color.parseColor("#ff99cc00"));
             cardDieselStatus.setCardBackgroundColor(Color.parseColor("#ff99cc00"));
         }else{
-            txtPetrolStatus.setText("Finished");
             txtDieselStatus.setText("Finished");
-            cardPetrolStatus.setCardBackgroundColor(Color.parseColor("#ffff4444"));
             cardDieselStatus.setCardBackgroundColor(Color.parseColor("#ffff4444"));
         }
 
+        if(fuelStation.isPetrolStatus()){
+            txtPetrolStatus.setText("Available");
+            cardPetrolStatus.setCardBackgroundColor(Color.parseColor("#ff99cc00"));
+        }else{
+            txtPetrolStatus.setText("Finished");
+            cardPetrolStatus.setCardBackgroundColor(Color.parseColor("#ffff4444"));
+        }
+
+        loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
 
 
     }

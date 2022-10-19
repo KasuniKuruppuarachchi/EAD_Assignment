@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.FuelStation;
+import com.example.fuelquemanagement_client.models.User;
 
 import java.util.List;
 
@@ -25,13 +26,15 @@ public class StationAdapter extends ArrayAdapter<FuelStation>{
 
     private Context context;
     private int resource;
+    private User loggedUser;
     List<FuelStation> stations;
 
-    public StationAdapter(@NonNull Context context, int resource, List<FuelStation> stations) {
+    public StationAdapter(@NonNull Context context, int resource, List<FuelStation> stations, User loggedUser) {
         super(context, resource, stations);
         this.context = context;
         this.resource = resource;
         this.stations = stations;
+        this.loggedUser = loggedUser;
     }
 
     @NonNull
@@ -57,10 +60,25 @@ public class StationAdapter extends ArrayAdapter<FuelStation>{
                 //Reload the same interface after delete a task
                 Intent myIntent = new Intent(context,VehicleOwnerDashboard.class);
                 myIntent.putExtra(Constants.STATION, station);
+                myIntent.putExtra(Constants.LOGGED_USER, loggedUser);
                 context.startActivity(myIntent);
 
             }
         });
+
+        StationLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Reload the same interface after delete a task
+                Intent myIntent = new Intent(context,VehicleOwnerDashboard.class);
+                myIntent.putExtra(Constants.STATION, station);
+                myIntent.putExtra(Constants.LOGGED_USER, loggedUser);
+                context.startActivity(myIntent);
+
+            }
+        });
+
 
         return row;
 
