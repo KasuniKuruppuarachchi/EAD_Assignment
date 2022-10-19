@@ -22,7 +22,6 @@ public class FuelController : ControllerBase
 
         try
         {
-  
             FuelModel fuelModel = new FuelModel();
             fuelModel.Id = ObjectId.GenerateNewId().ToString();
             fuelModel.Type = request.Type.ToString();
@@ -36,27 +35,21 @@ public class FuelController : ControllerBase
             //fuel.Append(fuelModel);
 
             var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id,request.StationsId);
-
             var multiUpdateDefinition = Builders<FuelStationModel>.Update
                 .Push(u => u.Fuel, fuelModel);
-
             var pushNotificationsResult = await collection.UpdateOneAsync(firstStationFilter, multiUpdateDefinition);
-
-
-            //var results = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
             var results = collection.Find(i => i.Id == request.StationsId).ToList();
 
-            return results[0];
+            //var results = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
 
+            return results[0];
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.ToString());
+            return null;
         }
-
-        return null;
-
     }
+
     [HttpGet("{id}")]
     public async Task<List<FuelModel>> GetFuelByID(string id)
     {
@@ -67,10 +60,7 @@ public class FuelController : ControllerBase
         IMongoCollection<FuelModel> collection = _db.GetCollection<FuelModel>("fuel");
 
         var res =  await collection.FindAsync(c => c.Id == id);
-        Console.Write(res.ToString());
         return res.ToList();
-
-
     }
 
 }
