@@ -72,10 +72,10 @@ public class StationOwnerDashboard extends AppCompatActivity {
 
                 if(rbPetrol.getText().toString().equals("Available")) {
                     System.out.println("Send Petrol as available");
-                    URL_petrol = "http://192.168.25.70:5000/FuelStation/UpdatePetrolStatus?status=true&id=";
+                    URL_petrol = Constants.BASE_URL + "/FuelStation/UpdatePetrolStatus?status=true&id=";
                 } else {
                     System.out.println("Send Petrol as finished");
-                    URL_petrol = "http://192.168.25.70:5000/FuelStation/UpdatePetrolStatus?status=false&id=";
+                    URL_petrol = Constants.BASE_URL + "/FuelStation/UpdatePetrolStatus?status=false&id=";
                 }
 
                 URL_to_send = URL_petrol.concat(stationID);
@@ -120,10 +120,10 @@ public class StationOwnerDashboard extends AppCompatActivity {
 
                 if(rbDiesel.getText().toString().equals("Available")) {
                     System.out.println("Send Diesel as available");
-                    URL_diesel = "http://192.168.25.70:5000/FuelStation/UpdateDieselStatus?status=true&id=";
+                    URL_diesel = Constants.BASE_URL + "/FuelStation/UpdateDieselStatus?status=true&id=";
                 } else {
                     System.out.println("Send Diesel as finished");
-                    URL_diesel = "http://192.168.25.70:5000/FuelStation/UpdateDieselStatus?status=false&id=";
+                    URL_diesel = Constants.BASE_URL + "/FuelStation/UpdateDieselStatus?status=false&id=";
                 }
 
                 URL_to_send = URL_diesel.concat(stationID);
@@ -231,52 +231,5 @@ public class StationOwnerDashboard extends AppCompatActivity {
 //
 //        return req;
 //    }
-
-    //URL of the request we are sending
-//    String url = "api.openweathermap.org/data/2.5/weather?q=London";
-
-    /*
-     * JsonObjectRequest takes in five paramaters
-     * Request Type - This specifies the type of the request eg: GET,POST
-     * URL          - This String param specifies the Request URL
-     * JSONObject   - This parameter takes in the POST parameters."null" in
-     *                  case of GET request.
-     * Listener     -This parameter takes in a implementation of Response.Listener()
-     *                 interface which is invoked if the request is successful
-     * Listener     -This parameter takes in a implementation of Error.Listener()
-     *               interface which is invoked if any error is encountered while processing
-     *               the request
-     */
-//    JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-//            url, null,
-//            new Response.Listener() {
-//                @Override
-//                public void onResponse(JSONObject response) {
-//
-//                    //Success Callback
-//                }
-//            },
-//            new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//
-//                    //Failure Callback
-//                }
-//            })
-//
-//    {
-//
-//        /** Passing some request headers* */
-//        @Override
-//        public Map getHeaders() throws AuthFailureError {
-//            HashMap headers = new HashMap();
-//            headers.put("Content-Type", "application/json");
-//            headers.put("apiKey", "xxxxxxxxxxxxxxx");
-//            return headers;
-//        }
-//    };
-//
-//    // Adding the request to the queue along with a unique string tag
-//    MyApplication.getInstance().addToRequestQueue(jsonObjectReq,"headerRequest");
 
 }

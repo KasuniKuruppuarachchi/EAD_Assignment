@@ -32,6 +32,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.R;
+import com.example.fuelquemanagement_client.constants.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -136,7 +137,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-            String URL = "http://192.168.1.71:5000/Fuel";
+            String URL = Constants.BASE_URL + "/Fuel";
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", selectedType);
             jsonObject.put("amount", et_fuel_amount.getText().toString());
