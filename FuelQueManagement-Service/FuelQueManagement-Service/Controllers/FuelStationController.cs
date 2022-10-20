@@ -67,16 +67,7 @@ public class FuelStationController : ControllerBase
 
         IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
 
-
-            if(status == false)
-            {
-                fuelStation.PetrolStatus = true;
-            }
-            else
-            {
-                fuelStation.PetrolStatus = false;
-            }
-   
+                fuelStation.DieselStatus = status;
 
         var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, id);
 
@@ -103,15 +94,7 @@ public class FuelStationController : ControllerBase
 
         IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
 
-
-            if (status == false)
-            {
-                fuelStation.PetrolStatus = true;
-            }
-            else
-            {
-                fuelStation.PetrolStatus = false;
-            }
+                fuelStation.PetrolStatus = status;
 
         var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, id);
 
