@@ -1,4 +1,5 @@
 ﻿using FuelQueManagement_Service.Models;
+using FuelQueManagement_Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -10,33 +11,19 @@ namespace FuelQueManagement_Service.Controllers
     [Route("[controller]")]
     public class QueueController : Controller
     {
-        // POST: QueueController/Create
+        // Declearing the fuel station service instance
+        private readonly QueueService _queueService;
+        public QueueController(QueueService queueService) =>
+            _queueService = queueService;
+
+        // This is required to create a queue object
         [HttpPost]
         public async Task<FuelStationModel> Create(QueueModel request)
         {
-            var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
-            var _db = Client.GetDatabase("FuelQueue");
-
-            IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
-
             try
             {
-                QueueModel queueModel = new QueueModel();
-                queueModel.Id = ObjectId.GenerateNewId().ToString();
-                queueModel.VehicleType = request.VehicleType;
-                queueModel.VehicleOwner = request.VehicleOwner;
-                queueModel.FuelType = request.FuelType;
-                queueModel.StationsId = request.StationsId;
-                queueModel.LastModified = DateTime.Now;
-
-                var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, request.StationsId);
-                var multiUpdateDefinition = Builders<FuelStationModel>.Update
-                    .Push(u => u.Queue, queueModel);
-                var result = await collection.UpdateOneAsync(firstStationFilter, multiUpdateDefinition);
-                var results = collection.Find(i => i.Id == request.StationsId).ToList();
-                //var results = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
-
-                return results[0];
+                var res = await _queueService.Create(request);
+                return res;
             }
             catch (Exception e)
             {
@@ -44,37 +31,16 @@ namespace FuelQueManagement_Service.Controllers
             }
         }
 
-
-        // POST: QueueController/Delete/5
+        // This is required to delete a queue object
         [HttpDelete]
         public async Task<FuelStationModel> Delete(string fuelType, string stationId, string vehicleOwner)
         {
-            var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
-            var _db = Client.GetDatabase("FuelQueue");
-            FuelStationModel fuelStation = new FuelStationModel();
-
-            IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
-
             try
             {
-                // create a filter
-                var fuelStationObject = Builders<FuelStationModel>
-                    .Filter.ElemMatch(t => t.Queue,
-                    queue => queue.FuelType == fuelType);
-
-                var pullVehicleDefinition = Builders<FuelStationModel>.Update
-                    .PullFilter(t => t.Queue,
-                        queue => queue.VehicleOwner == vehicleOwner);
-
-                var result = await collection
-                    .UpdateManyAsync(fuelStationObject, pullVehicleDefinition);
-
-                var res = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
-
-                return res[0];
-                return null;
+                var res = await _queueService.Delete(fuelType,stationId,vehicleOwner);
+                return res;
             }
-            catch
+            catch (Exception e)
             {
                 return null;
             }
