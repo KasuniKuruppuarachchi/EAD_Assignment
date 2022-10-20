@@ -24,6 +24,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.MainActivity;
 import com.example.fuelquemanagement_client.R;
+import com.example.fuelquemanagement_client.constants.Constants;
+import com.example.fuelquemanagement_client.models.Fuel;
+import com.example.fuelquemanagement_client.models.FuelStation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,13 +43,17 @@ public class StationOwnerDashboard extends AppCompatActivity {
     private int petrolStatus;
     private int dieselStatus;
     private String stationID = "63516919644eac12a2f7eb9f";
+    private FuelStation fuelStation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_station_owner_dashboard);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Station Owner Dashboard");
+
+        fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
+
+        getSupportActionBar().setTitle(fuelStation.getStationName() + " - " + fuelStation.getLocation());
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
