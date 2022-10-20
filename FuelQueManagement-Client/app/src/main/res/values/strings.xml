@@ -50,5 +50,10 @@
     <string name="diesel">Diesel</string>
     <string name="available">Available</string>
     <string name="finish">Finish</string>
-
+    <string name="fuel_type">Fuel Type</string>
+    <string name="btn_fuel_arrival">Update Fuel Arrival</string>
+    <string-array name="fuel_types">
+        <item>Petrol</item>
+        <item>Diesel</item>
+    </string-array>
 </resources>
