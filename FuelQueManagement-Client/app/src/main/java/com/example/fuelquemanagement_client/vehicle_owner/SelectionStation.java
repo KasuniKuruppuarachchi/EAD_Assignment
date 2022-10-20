@@ -52,7 +52,7 @@ public class SelectionStation extends AppCompatActivity {
     private ArrayList<FuelStation> stations;
     private RequestQueue mRequestQueue;
     private User loggedUser;
-    String api = "http://192.168.8.118:5000/FuelStation";
+    String api = Constants.BASE_URL+"/FuelStation";
     //String api = "https://jsonplaceholder.typicode.com/photos";
 
     private static final String TAG = "AndroidRESTClientActivity";

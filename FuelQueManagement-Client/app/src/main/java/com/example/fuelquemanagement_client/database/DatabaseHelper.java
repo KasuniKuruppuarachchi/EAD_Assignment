@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String PASSWORD = "PASSWORD";
     public static final String LOCATION = "LOCATION";
     public static final String STATION_NAME = "STATION_NAME";
+    public static final String STATION_ID = "STATION_ID";
 
 //    public static final String VEHICLE_OWNER_TABLE = "VEHCILE_OWNER_TABLE";
 //    public static final String STATION_OWNER_TABLE = "STATION_OWNER_TABLE";
@@ -41,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        String createTableStmntStation = "CREATE TABLE " + STATION_OWNER_TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + FULL_NAME + ", " + USERNAME + ", " + PASSWORD + ", " + LOCATION + ", " + STATION_NAME + ")";
 //        sqLiteDatabase.execSQL(createTableStmntStation);
 
-        String createTableStmntUser = "CREATE TABLE " + USER_TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + FULL_NAME + ", " + USERNAME + ", " + PASSWORD + ", " + LOCATION + ", " + STATION_NAME + ", " + ROLE + ")";
+        String createTableStmntUser = "CREATE TABLE " + USER_TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + FULL_NAME + ", " + USERNAME + ", " + PASSWORD + ", " + LOCATION + ", " + STATION_NAME + ", " + STATION_ID + ", " + ROLE + ")";
         sqLiteDatabase.execSQL(createTableStmntUser);
     }
 
@@ -91,6 +92,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(PASSWORD, user.getPassword());
         cv.put(LOCATION, user.getLocation());
         cv.put(STATION_NAME, user.getStationName());
+        cv.put(STATION_ID, user.getStationId());
         cv.put(ROLE, user.getRole());
 
         long insertSuccess = db.insert(USER_TABLE, null, cv);
@@ -117,7 +119,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     user.setPassword(c.getString(3));
                     user.setLocation(c.getString(4));
                     user.setStationName(c.getString(5));
-                    user.setRole(c.getString(6));
+                    user.setStationId(c.getString(6));
+                    user.setRole(c.getString(7));
 
                 } while (c.moveToNext());
             }else{

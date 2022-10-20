@@ -33,6 +33,9 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
         switch (view.getId()) {
             case R.id.btn_join:
                 Intent i = new Intent(VehicleOwnerDashboard.this, JoinQueue.class);
+                i.putExtra(Constants.LOGGED_USER, loggedUser);
+                i.putExtra(Constants.STATION, fuelStation);
+               // i.putExtra(Constants.LOGGED_USER, fuelStation);
                 startActivity(i);
                 break;
             default:

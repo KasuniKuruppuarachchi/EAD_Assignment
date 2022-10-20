@@ -4,18 +4,19 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     private int id;
-    private String fName, username,location, stationName, password,role;
+    private String fName, username,location, stationName, password, stationId, role;
 
     public User() {
     }
 
-    public User(int id, String fName, String username, String location, String stationName, String password, String role) {
+    public User(int id, String fName, String username, String location, String stationName, String password, String stationId, String role) {
         this.id = id;
         this.fName = fName;
         this.username = username;
         this.location = location;
         this.stationName = stationName;
         this.password = password;
+        this.stationId = stationId;
         this.role = role;
     }
 
@@ -73,5 +74,13 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getStationId() {
+        return stationId;
+    }
+
+    public void setStationId(String stationId) {
+        this.stationId = stationId;
     }
 }

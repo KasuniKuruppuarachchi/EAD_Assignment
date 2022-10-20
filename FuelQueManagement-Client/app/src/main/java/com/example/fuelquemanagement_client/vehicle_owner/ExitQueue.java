@@ -13,12 +13,14 @@ import android.widget.Toast;
 
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
+import com.example.fuelquemanagement_client.models.FuelStation;
 
 import java.util.Date;
 
 public class ExitQueue extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnExitAfter, btnExitBefore;
+    private FuelStation fuelStation;
     private TextView txtJoinedTime;
     private String joinedTime;
 
@@ -30,6 +32,7 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
         getSupportActionBar().setTitle("Exit Queue Process");
 
         joinedTime = getIntent().getStringExtra(Constants.JOINED_TIME);
+        fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
 
         btnExitAfter = findViewById(R.id.btn_exitAfter);
         btnExitAfter.setOnClickListener(this);
@@ -49,6 +52,7 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
         //If user clicks on the back button
         if(id == android.R.id.home){
             Intent intent = new Intent(ExitQueue.this, JoinQueue.class);
+            intent.putExtra(Constants.STATION, fuelStation);
             startActivity(intent);
         }
         return true;

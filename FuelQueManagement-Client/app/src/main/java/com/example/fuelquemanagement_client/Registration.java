@@ -46,6 +46,7 @@ import java.util.Map;
 public class Registration extends AppCompatActivity implements View.OnClickListener {
 
     private EditText edFullName, edUserName, edPassword, edConfirmPassword, edLocation, edStationName;
+    final String[] stationId = new String[1];
     private DatabaseHelper databaseHelper;
     private VehicleOwner vehicleOwner;
     private StationOwner stationOwner;
@@ -64,7 +65,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                     }
                 } else {
                     if (allowSave) {
-                        user = addStationUser();
+                        postDataUsingVolleyObject(edStationName.getText().toString(), edLocation.getText().toString(), "");
+                        // user = addStationUser();
                     }
                 }
                 break;
@@ -122,7 +124,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
             return false;
         }
 
-        if(role.equals(Constants.STATION)){
+        if (role.equals(Constants.STATION)) {
             if (inputTaskValidatorHelper.isNullOrEmpty(edLocation.getText().toString())) {
                 Toast.makeText(this, "Station Location Should not be Empty", Toast.LENGTH_SHORT).show();
                 return false;
@@ -148,7 +150,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     }
 
     public User addVehicleUser() {
-        user = new User(-1, edFullName.getText().toString(), edUserName.getText().toString(), "", "", edPassword.getText().toString(), Constants.VEHICLE);
+        user = new User(-1, edFullName.getText().toString(), edUserName.getText().toString(), "", "", edPassword.getText().toString(), "", Constants.VEHICLE);
         boolean success = databaseHelper.addUserRecord(user);
         if (success) {
             Toast.makeText(this, "Successfully Registered", Toast.LENGTH_SHORT).show();
@@ -160,17 +162,18 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         return user;
     }
 
-    public User addStationUser() {
-        user = new User(-1, edFullName.getText().toString(), edUserName.getText().toString(), edLocation.getText().toString(), edStationName.getText().toString(), edPassword.getText().toString(), Constants.STATION);
+    public User addStationUser(String stationId) {
+
+        //postDataUsingVolleyObject( edStationName.getText().toString(), edLocation.getText().toString(), "");
+        user = new User(-1, edFullName.getText().toString(), edUserName.getText().toString(), edLocation.getText().toString(), edStationName.getText().toString(), edPassword.getText().toString(), stationId, Constants.STATION);
         boolean success = databaseHelper.addUserRecord(user);
 
-
         // calling a method to post the data and passing our name and job.
-       // postDataUsingVolley(edStationName.getText().toString(), edLocation.getText().toString());
+        // postDataUsingVolley(edStationName.getText().toString(), edLocation.getText().toString());
         if (success) {
             String id = databaseHelper.getLastStationOwnerId();
-            System.out.println("Last Owner Id:"+id);
-            postDataUsingVolley( edStationName.getText().toString(), edLocation.getText().toString(), id);
+            System.out.println("Last Owner Id:" + id);
+
             Toast.makeText(this, "Successfully Registered", Toast.LENGTH_SHORT).show();
             Intent i = new Intent(Registration.this, LoginScreen.class);
             startActivity(i);
@@ -186,8 +189,8 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         int id = item.getItemId();
 
         //If user clicks on the back button
-        if(id == android.R.id.home){
-            Intent intent = new Intent(Registration.this,LoginScreen.class);
+        if (id == android.R.id.home) {
+            Intent intent = new Intent(Registration.this, LoginScreen.class);
             startActivity(intent);
         }
 //        //If user clicks on the cross button in the top right corner of AddTask interface
@@ -200,34 +203,46 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-//    private void postDataUsingVolley(String stationName, String locationName, String stationOwnerId) {
+
+//    private void postDataUsingVolley(String stationName, String locationName, String stationOwnerId){
 //        try {
 //            RequestQueue requestQueue = Volley.newRequestQueue(this);
 //
-//
 //            String[] arr = new String[0];
 //
-//            String URL = "http://192.168.8.118:5000/Fuel";
-//            JSONObject jsonBody = new JSONObject();
-//            jsonBody.put("id", null);
-//            jsonBody.put("type", "Diesel");
-//            jsonBody.put("amount", 10);
-//            jsonBody.put("date", "date");
-//            jsonBody.put("time", "time");
-//            jsonBody.put("stationsId", "634da9932f4682566f56114d");
-//            jsonBody.put("lastModified", "634da9932f4682566f56114d");
-//            final String mRequestBody = jsonBody.toString();
+//            System.out.println("stationName"+ stationName);
+//            System.out.println("locationName"+ locationName);
+//            System.out.println("stationOwnerId"+ stationOwnerId);
+//            String URL = "http://192.168.8.118:5000/FuelStation";
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("id", null);
+//            jsonObject.put("name", stationName);
+//            jsonObject.put("location", locationName);
+//            //jsonObject.put("fuel", new Fuel[0]);
+//            //jsonObject.put("queue", new Fuel[0]);
+//            jsonObject.put("stationOwner", stationOwnerId);
+//            jsonObject.put("dieselStatus", false);
+//            jsonObject.put("petrolStatus", false);
+//            jsonObject.put("lastModified", null);
+//            final String mRequestBody = jsonObject.toString();
 //
 //            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
 //                @Override
 //                public void onResponse(String response) {
 //                    Log.i("LOG_VOLLEY", response);
+//                    try {
+//                        System.out.println("Inside"+   response);
+//                        JSONObject singleObject = new JSONObject(response);
+//                        System.out.println("Inside" +   singleObject);
+//                        System.out.println("Inside" +   singleObject.getString("name"));
+//                    }catch (JSONException e){
+//
+//                    }
 //                }
 //            }, new Response.ErrorListener() {
 //                @Override
 //                public void onErrorResponse(VolleyError error) {
 //                    Log.e("LOG_VOLLEY", error.toString());
-//                    Log.e("LOG_VOLLEY", error.getLocalizedMessage());
 //                }
 //            }) {
 //                @Override
@@ -257,25 +272,23 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
 //                }
 //            };
 //
-//            System.out.println("StringRequest" + stringRequest);
 //            requestQueue.add(stringRequest);
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
+//
 //    }
+//
 
 
-    private void postDataUsingVolley(String stationName, String locationName, String stationOwnerId){
+    private void postDataUsingVolleyObject(String stationName, String locationName, String stationOwnerId) {
+        JSONObject jsonObject = new JSONObject();
+        RequestQueue mRequestQueue = Volley.newRequestQueue(this);
+        String URL = Constants.BASE_URL + "/FuelStation";
+
         try {
-            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            // user_id, comment_id,status
 
-            String[] arr = new String[0];
-
-            System.out.println("stationName"+ stationName);
-            System.out.println("locationName"+ locationName);
-            System.out.println("stationOwnerId"+ stationOwnerId);
-            String URL = "http://192.168.8.118:5000/FuelStation";
-            JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", null);
             jsonObject.put("name", stationName);
             jsonObject.put("location", locationName);
@@ -285,106 +298,34 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
             jsonObject.put("dieselStatus", false);
             jsonObject.put("petrolStatus", false);
             jsonObject.put("lastModified", null);
-            final String mRequestBody = jsonObject.toString();
-
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.i("LOG_VOLLEY", response);
-                    try {
-                        System.out.println("Inside"+   response);
-                        JSONObject singleObject = new JSONObject(response);
-                        System.out.println("Inside" +   singleObject);
-                        System.out.println("Inside" +   singleObject.getString("name"));
-                    }catch (JSONException e){
-
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("LOG_VOLLEY", error.toString());
-                }
-            }) {
-                @Override
-                public String getBodyContentType() {
-                    return "application/json; charset=utf-8";
-                }
-
-                @Override
-                public byte[] getBody() throws AuthFailureError {
-                    try {
-                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-                    } catch (UnsupportedEncodingException uee) {
-                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-                        return null;
-                    }
-                }
-
-                @Override
-                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                    String responseString = "";
-                    if (response != null) {
-
-                        responseString = String.valueOf(response.statusCode);
-
-                    }
-                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                }
-            };
-
-            requestQueue.add(stringRequest);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                URL, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Inside new Api" + response);
+                        try {
+                            System.out.println("StationIdNew" + response.getString("id"));
+                            stationId[0] = response.getString("id");
+                            addStationUser(stationId[0]);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        //  YOUR RESPONSE
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        mRequestQueue.add(jsonObjReq);
     }
-
-
-//    public void postDataUsingVolley(String stationName, String locationName, String stationOwnerId){
-//        JsonObjectRequest
-//                jsonObjReq
-//                = new JsonObjectRequest(
-//                Request.Method.POST,
-//                "http://192.168.8.118:5000/FuelStation",
-//                null,
-//                new Response.Listener() {
-//
-//                    @Override
-//                    public void onResponse(JSONObject response)
-//                    {
-//                        Log.d("api", response.toString());
-//
-//                    }
-//                },
-//                new Response.ErrorListener() {
-//
-//                    @Override
-//                    public void onErrorResponse(VolleyError error)
-//                    {
-//                        VolleyLog.d(TAG, "Error: "
-//                                + error.getMessage());
-//                        pDialog.hide();
-//                    }
-//                }) {
-//
-//            @Override
-//            protected Map getParams()
-//            {
-//                Map params = new HashMap();
-//                params.put("name", "Androidhive");
-//                params.put("email", "abc@androidhive.info");
-//                params.put("password", "password123");
-//
-//                return params;
-//            }
-//
-//        };
-//
-//        AppController.getInstance()
-//                .addToRequestQueue(jsonObjReq, tag_json_obj);
-//
-//    }
-
 
 }

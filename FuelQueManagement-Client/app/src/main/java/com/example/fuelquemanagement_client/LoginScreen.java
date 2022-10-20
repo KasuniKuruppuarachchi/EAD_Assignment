@@ -6,24 +6,40 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.database.DatabaseHelper;
 import com.example.fuelquemanagement_client.database.InputValidatorHelper;
+import com.example.fuelquemanagement_client.models.FuelStation;
 import com.example.fuelquemanagement_client.models.StationOwner;
 import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.models.VehicleOwner;
 import com.example.fuelquemanagement_client.station_owner.StationOwnerDashboard;
 import com.example.fuelquemanagement_client.vehicle_owner.SelectionStation;
+import com.example.fuelquemanagement_client.vehicle_owner.StationAdapter;
 import com.example.fuelquemanagement_client.vehicle_owner.VehicleOwnerDashboard;
 
-public class LoginScreen extends AppCompatActivity implements View.OnClickListener{
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
+
+public class LoginScreen extends AppCompatActivity implements View.OnClickListener {
+
+    final FuelStation[] registeredFuelStation = {new FuelStation()};
     private EditText edUserName, edPassword;
     private DatabaseHelper databaseHelper;
     private TextView txtRegisterLink;
@@ -33,12 +49,12 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View view) {
         boolean allowSave = checkValidations();
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.txt_linkRegister:
                 showAlertDialog();
                 break;
             case R.id.btn_logIn:
-                if(allowSave) {
+                if (allowSave) {
                     user = databaseHelper.loginValidate(edUserName.getText().toString(), edPassword.getText().toString());
                     if (user == null) {
                         Toast.makeText(LoginScreen.this, "Invalid Credentials, Please try again", Toast.LENGTH_LONG).show();
@@ -49,8 +65,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                             i.putExtra(Constants.LOGGED_USER, user);
                             startActivity(i);
                         } else {
-                            Intent i = new Intent(LoginScreen.this, StationOwnerDashboard.class);
-                            startActivity(i);
+                            System.out.println("Station Id " + user.getStationId());
+                            findFuelStation(user.getStationId());
+
                         }
                     }
                 }
@@ -86,7 +103,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
     private void showAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginScreen.this);
         alertDialog.setTitle("Register As ");
-        String[] items = {"Vehicle Owner","Station Owner"};
+        String[] items = {"Vehicle Owner", "Station Owner"};
         int checkedItem = 1;
         alertDialog.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
             @Override
@@ -130,5 +147,72 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         }
 
         return allowSave;
+    }
+
+    public void findFuelStation(String stationId) {
+
+        ArrayList<FuelStation> stations = new ArrayList<>();
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String api = Constants.BASE_URL + "/FuelStation";
+
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, api,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        // textView.setText("Response is: " + response.substring(0,500));
+                        //     System.out.println("Response is: " + response.substring(0,500));
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            int length = array.length();
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject singleObject = array.getJSONObject(i);
+                                Log.e("api", "onResponse: " + singleObject.getString("id"));
+                                FuelStation fuelStation = new FuelStation(
+                                        singleObject.getString("id"),
+                                        singleObject.getString("name"),
+                                        singleObject.getString("location"),
+                                        singleObject.getString("stationOwner"),
+                                        singleObject.getString("lastModified"),
+                                        singleObject.getBoolean("dieselStatus"),
+                                        singleObject.getBoolean("petrolStatus")
+                                );
+                                stations.add(fuelStation);
+                                Log.e("api", "onResponse: " + stations.size());
+
+                                for (FuelStation station : stations) {
+                                    if (station.getId().equals(stationId)) {
+                                        registeredFuelStation[0] = station;
+
+                                        System.out.println("Nameeeee :" + registeredFuelStation[0].getStationName());
+                                        Intent intent = new Intent(LoginScreen.this, StationOwnerDashboard.class);
+                                        intent.putExtra(Constants.STATION, registeredFuelStation[0]);
+                                        startActivity(intent);
+                                    }
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //textView.setText("That didn't work!");
+                        System.out.println("That didn't work!");
+                        System.out.println("That didn't work! +" + error.getLocalizedMessage());
+                    }
+                });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+
     }
 }
