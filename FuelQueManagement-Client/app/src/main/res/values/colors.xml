@@ -12,4 +12,6 @@
     <color name="main_color2">#A0C0D6</color>
     <color name="input_color">#E5FAFC</color>
     <color name="btn_color1">#DF7356</color>
+    <color name="fuel_available_color">#ff99cc00</color>
+    <color name="fuel_finish_color">#ffff4444</color>
 </resources>
