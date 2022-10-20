@@ -35,6 +35,7 @@ import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.Registration;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.FuelStation;
+import com.example.fuelquemanagement_client.models.Queue;
 import com.example.fuelquemanagement_client.models.User;
 
 import org.json.JSONException;
@@ -48,6 +49,7 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
     private User loggedUser;
     private String fuelType;
     private String vehicle;
+    private Queue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,12 +120,15 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
                 System.out.println("VehicleOwner"+loggedUser.getId());
                 System.out.println("StationId"+fuelStation.getId());
                 System.out.println("Fuel Type"+fuelType);
+                queue = new Queue("",vehicle, String.valueOf(loggedUser.getId()), fuelType, fuelStation.getId());
                 addQueueAPI(vehicle, String.valueOf(loggedUser.getId()),fuelStation.getId(), fuelType);
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 Intent i = new Intent(JoinQueue.this, ExitQueue.class);
                 i.putExtra(Constants.JOINED_TIME, dateFormat.format(date).toString());
                 i.putExtra(Constants.STATION, fuelStation);
+                i.putExtra(Constants.JOINED_QUEUE, queue);
+                i.putExtra(Constants.LOGGED_USER, loggedUser);
                 startActivity(i);
                 break;
             default:

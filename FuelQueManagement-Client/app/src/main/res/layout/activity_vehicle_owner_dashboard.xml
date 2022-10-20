@@ -78,8 +78,20 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txt_bikeCount"
-                        android:layout_width="144dp"
+                        android:id="@+id/txt_bikeCountPetrol"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="10dp"
+                        android:text="40"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_bikeCountDiesel"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:layout_weight="1"
@@ -108,7 +120,19 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txt_vanCount"
+                        android:id="@+id/txt_vanCountPetrol"
+                        android:layout_width="67dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="10dp"
+                        android:text="40"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_vanCountDiesel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -138,7 +162,19 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txt_3wheelCount"
+                        android:id="@+id/txt_3wheelCountPetrol"
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="10dp"
+                        android:text="40"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_3wheelCountDiesel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -169,7 +205,20 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txt_carCount"
+                        android:id="@+id/txt_carCountPetrol"
+                        android:layout_width="28dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="10dp"
+                        android:text="27"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_carCountDiesel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -201,7 +250,20 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/txt_bussLorryCount"
+                        android:id="@+id/txt_bussLorryCountPetrol"
+                        android:layout_width="26dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="10dp"
+                        android:text="27"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_bussLorryCountDiesel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
