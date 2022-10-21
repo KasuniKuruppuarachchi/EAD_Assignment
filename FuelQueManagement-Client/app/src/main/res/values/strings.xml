@@ -32,6 +32,7 @@
         <item>Bus</item>
         <item>Van</item>
         <item>Motor Bike</item>
+        <item>Three Wheel</item>
     </string-array>
 
     <string-array name="fuel_array">

@@ -91,7 +91,7 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-
+    //When user clicks on exitFromQueue button, this updates the relevant fuel station with removed queue details
     private void exitQueueApi() {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
