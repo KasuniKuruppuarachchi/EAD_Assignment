@@ -1,4 +1,5 @@
 ﻿using FuelQueManagement_Service.Models;
+using FuelQueManagement_Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
@@ -10,33 +11,19 @@ namespace FuelQueManagement_Service.Controllers;
 [Route("[controller]")]
 public class FuelStationController : ControllerBase
 {
+    // Declearing the fuel station service instance
+    private readonly FuelStationService _fuelStationService;
+    public FuelStationController(FuelStationService fuelStationService) =>
+        _fuelStationService = fuelStationService;
 
-    // POST: FuelStationController/Create
+    // This is required to create a fuel station
     [HttpPost]
-    public FuelStationModel Create(FuelStationModel request)
+    public async Task<FuelStationModel> Create(FuelStationModel request)
     {
-        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
-        var _db = Client.GetDatabase("FuelQueue");
-
-        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
-
         try
         {
-            FuelStationModel fuelStation =  new FuelStationModel();
-            fuelStation.Name = request.Name;
-            fuelStation.Location = request.Location;
-            fuelStation.StationOwner = request.StationOwner;
-            fuelStation.LastModified = DateTime.Now;
-            fuelStation.DieselStatus = false;
-            fuelStation.PetrolStatus = false;
-            fuelStation.Fuel = new FuelModel[0];
-            fuelStation.Queue = new QueueModel[0];
-
-            collection.InsertOneAsync(fuelStation);
-
-            var res = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
-
-            return res[0];
+            var res = await _fuelStationService.Create(request);
+            return res;
         }
         catch
         {
@@ -44,69 +31,65 @@ public class FuelStationController : ControllerBase
         }
     }
 
+    // This is required to get all fuel stations
     [HttpGet]
     public async Task<List<FuelStationModel>> GetFuelStations()
     {
-        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
-        var _db = Client.GetDatabase("FuelQueue");
-        FuelStationModel fuelStation = new FuelStationModel();
-
-        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
-
-        var res = collection.Find(_ => true).ToList();
-        return res;
+        try
+        {
+            var res = await _fuelStationService.GetFuelStations();
+            return res;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
+    // This is required to get fuel station by id
+    [HttpGet("{id}")]
+    public async Task<FuelStationModel> GetFuelStationById(string id)
+    {
+        try
+        {
+            var res = await _fuelStationService.GetFuelStationById(id);
+            return res;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    // This is required to update diesel status
     [HttpPost]
     [Route("UpdateDieselStatus")]
     public async Task<FuelStationModel> UpdateDieselStatus(bool status, string id)
     {
-        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
-        var _db = Client.GetDatabase("FuelQueue");
-        FuelStationModel fuelStation = new FuelStationModel();
-
-        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
-
-                fuelStation.DieselStatus = status;
-
-        var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, id);
-
-        var updateNameDefinition = Builders<FuelStationModel>.Update
-            .Set(u => u.DieselStatus, fuelStation.DieselStatus);
-
-        var updateNameResult = await collection
-            .UpdateOneAsync(firstStationFilter,
-            updateNameDefinition);
-
-        var res = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
-
-        return res[0];
-
+        try
+        {
+            var res = await _fuelStationService.UpdateDieselStatus(status, id);
+            return res;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
+    // This is required to update petrol status
     [HttpPost]
     [Route("UpdatePetrolStatus")]
     public async Task<FuelStationModel> UpdatePetrolStatus(bool status, string id)
     {
-        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
-        var _db = Client.GetDatabase("FuelQueue");
-        FuelStationModel fuelStation = new FuelStationModel();
-
-        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
-
-                fuelStation.PetrolStatus = status;
-
-        var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, id);
-
-        var updateNameDefinition = Builders<FuelStationModel>.Update
-            .Set(u => u.PetrolStatus, fuelStation.PetrolStatus);
-
-        var updateNameResult = await collection
-            .UpdateOneAsync(firstStationFilter,
-            updateNameDefinition);
-
-        var res = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
-
-        return res[0];
+        try
+        {
+            var res = await _fuelStationService.UpdatePetrolStatus(status, id);
+            return res;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }

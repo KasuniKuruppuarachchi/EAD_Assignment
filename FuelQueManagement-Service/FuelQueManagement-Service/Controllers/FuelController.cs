@@ -1,9 +1,11 @@
 ﻿using FuelQueManagement_Service.Models;
+using FuelQueManagement_Service.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoDB.Driver.Core.Operations;
 
 namespace FuelQueManagement_Service.Controllers;
 
@@ -11,56 +13,23 @@ namespace FuelQueManagement_Service.Controllers;
 [Route("[controller]")]
 public class FuelController : ControllerBase
 {
-    // POST: FuelController/Create
+    //Declearing the fuel service instance
+    private readonly FuelService _fuelService;
+    public FuelController(FuelService fuelService) =>
+        _fuelService = fuelService;
+
+    //This is required to create a fuel object 
     [HttpPost]
     public async Task<FuelStationModel> Create(FuelModel request) 
     {
-        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
-        var _db = Client.GetDatabase("FuelQueue");
-
-        IMongoCollection<FuelStationModel> collection = _db.GetCollection<FuelStationModel>("fuelstation");
-
         try
         {
-            FuelModel fuelModel = new FuelModel();
-            fuelModel.Id = ObjectId.GenerateNewId().ToString();
-            fuelModel.Type = request.Type.ToString();
-            fuelModel.Amount = request.Amount;
-            fuelModel.Date = request.Date;
-            fuelModel.Time = request.Time;
-            fuelModel.LastModified = DateTime.Now;
-            fuelModel.StationsId = request.StationsId ?? null;
-
-            //FuelModel[] fuel = new FuelModel[1];
-            //fuel.Append(fuelModel);
-
-            var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id,request.StationsId);
-            var multiUpdateDefinition = Builders<FuelStationModel>.Update
-                .Push(u => u.Fuel, fuelModel);
-            var pushNotificationsResult = await collection.UpdateOneAsync(firstStationFilter, multiUpdateDefinition);
-            var results = collection.Find(i => i.Id == request.StationsId).ToList();
-
-            //var results = collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
-
-            return results[0];
+            var res = await _fuelService.Create(request);
+            return res;
         }
         catch (Exception e)
         {
             return null;
         }
     }
-
-    [HttpGet("{id}")]
-    public async Task<List<FuelModel>> GetFuelByID(string id)
-    {
-        var Client = new MongoClient("mongodb+srv://root:root@fuelqueue.qnpg99v.mongodb.net/FuelQueue?retryWrites=true&w=majority");
-        var _db = Client.GetDatabase("FuelQueue");
-        FuelModel fuel = new FuelModel();
-
-        IMongoCollection<FuelModel> collection = _db.GetCollection<FuelModel>("fuel");
-
-        var res =  await collection.FindAsync(c => c.Id == id);
-        return res.ToList();
-    }
-
 }
