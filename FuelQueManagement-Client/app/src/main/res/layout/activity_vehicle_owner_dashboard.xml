@@ -45,7 +45,7 @@
         app:cardBackgroundColor="@color/teal_700"
         app:cardCornerRadius="10dp"
         app:cardElevation="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintBottom_toTopOf="@+id/txt_station_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

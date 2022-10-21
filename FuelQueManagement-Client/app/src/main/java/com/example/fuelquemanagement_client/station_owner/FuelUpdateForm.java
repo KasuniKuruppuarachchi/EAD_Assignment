@@ -33,6 +33,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
+import com.example.fuelquemanagement_client.models.FuelStation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,13 +41,14 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 
-public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private TextView tv_arrival_date, tv_arrival_time;
     private int hour, min;
     private EditText et_fuel_amount;
     private Spinner sp_fuel_type;
-    private Button btn_update;
-    private String selectedType;
+    private Button btn_update, btn_cancel;
+    private String selectedType, stationID;
+    private FuelStation fuelStation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,19 +59,41 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Update Fuel Arrival");
 
+        // Station ID by the intent
+        fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
+        stationID = fuelStation.getId();
+
         et_fuel_amount = findViewById(R.id.editTextFuelAmount);
         tv_arrival_date = findViewById(R.id.tv_ArrivalDate);
         tv_arrival_time = findViewById(R.id.tv_ArrivalTime);
         btn_update = findViewById(R.id.btn_update);
-        btn_update.setOnClickListener(this);
-        sp_fuel_type = (Spinner) findViewById(R.id.sp_fuel_type);
+        btn_cancel = findViewById(R.id.btn_cancel);
 
+        // Cancel button navigation
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FuelUpdateForm.this, StationOwnerDashboard.class);
+                startActivity(intent);
+            }
+        });
+
+        // Update button navigation
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                postFuelUpdate();
+            }
+        });
+
+        // Setting the drop down menu
+        sp_fuel_type = (Spinner) findViewById(R.id.sp_fuel_type);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.fuel_types, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_fuel_type.setAdapter(adapter);
         sp_fuel_type.setOnItemSelectedListener(this);
 
-        // Time Picker
+        // Implementing the Time Picker
         tv_arrival_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,7 +122,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Date Picker
+        // Implementing the Date Picker
         tv_arrival_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,6 +139,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
         });
     }
 
+    // Function to obtain the selected fuel type from the drop down menu (spinner)
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
         selectedType = (String) adapterView.getItemAtPosition(pos).toString();
@@ -126,13 +151,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
 
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btn_update) {
-            postFuelUpdate();
-        }
-    }
-
+    // Function to send fuel update data as post call
     private void postFuelUpdate() {
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -143,13 +162,24 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
             jsonObject.put("amount", et_fuel_amount.getText().toString());
             jsonObject.put("date", tv_arrival_date.getText().toString());
             jsonObject.put("time", tv_arrival_time.getText().toString());
-            jsonObject.put("stationsId", "634daba7601fef8b9474a684");
+            jsonObject.put("stationsId", stationID);
             final String mRequestBody = jsonObject.toString();
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.i("LOG_VOLLEY", response);
+                    Log.i("LOG_VOLLEY", response.getClass().getName());
+
+                    // Checking the response to show the toast messages
+                    if(response.equals("200")) {
+                        Toast.makeText(FuelUpdateForm.this, Constants.UPDATE_SUCCESS, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(FuelUpdateForm.this, Constants.ERROR, Toast.LENGTH_SHORT).show();
+                    }
+                    // Navigation after database operation
+                    Intent intent = new Intent(FuelUpdateForm.this, StationOwnerDashboard.class);
+                    intent.putExtra(Constants.STATION, fuelStation);
+                    startActivity(intent);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -167,7 +197,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
                     try {
                         return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
                     } catch (UnsupportedEncodingException uee) {
-                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
+                        VolleyLog.wtf("Unsupported Encoding", mRequestBody, "utf-8");
                         return null;
                     }
                 }
@@ -191,7 +221,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        //If user clicks on the back button
+        // Back button navigation
         if(id == android.R.id.home){
             Intent intent = new Intent(FuelUpdateForm.this, StationOwnerDashboard.class);
             startActivity(intent);

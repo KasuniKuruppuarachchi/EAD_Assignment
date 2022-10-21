@@ -53,6 +53,7 @@
     <string name="fuel_type">Fuel Type</string>
     <string name="btn_fuel_arrival">Update Fuel Arrival</string>
     <string name="type">Type</string>
+    <string name="current_status">Current Fuel Status</string>
     <string-array name="fuel_types">
         <item>Petrol</item>
         <item>Diesel</item>
