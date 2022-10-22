@@ -117,11 +117,35 @@ namespace FuelQueManagement_Service.Services
             {
                 fuelStation.TotalPetrol = (currentAmount + amount);
                 var updateDefinition = Builders<FuelStationModel>.Update
-                    .Set(u => u.TotalDiesel, fuelStation.TotalDiesel);
+                    .Set(u => u.TotalPetrol, fuelStation.TotalPetrol);
                 var updatedResult = await _Collection
                     .UpdateOneAsync(firstStationFilter, updateDefinition);
             }
 
+        }
+
+        // This is required to reduce the total fuel amount when the queue updated
+        public async void ReduceFromTotalFuelAmount(string stationId, int amount, string type, int currentAmount)
+        {
+            FuelStationModel fuelStation = new FuelStationModel();
+            var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, stationId);
+
+            if (type == "Diesel")
+            {
+                fuelStation.TotalDiesel = (currentAmount - amount);
+                var updateDefinition = Builders<FuelStationModel>.Update
+                    .Set(u => u.TotalDiesel, fuelStation.TotalDiesel);
+                var updatedResult = await _Collection
+                    .UpdateOneAsync(firstStationFilter, updateDefinition);
+            }
+            else
+            {
+                fuelStation.TotalPetrol = (currentAmount - amount);
+                var updateDefinition = Builders<FuelStationModel>.Update
+                    .Set(u => u.TotalPetrol, fuelStation.TotalPetrol);
+                var updatedResult = await _Collection
+                    .UpdateOneAsync(firstStationFilter, updateDefinition);
+            }
         }
 
         // This is required to get station by queue id 

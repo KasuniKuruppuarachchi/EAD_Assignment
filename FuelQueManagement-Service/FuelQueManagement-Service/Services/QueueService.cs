@@ -64,6 +64,7 @@ namespace FuelQueManagement_Service.Services
             FuelStationModel fuelStation = new FuelStationModel();
             var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, stationId);
             QueueModel history = new QueueModel();
+            history.Id = ObjectId.GenerateNewId().ToString();
             history.VehicleType = queueHistory.VehicleType;
             history.VehicleOwner = queueHistory.VehicleOwner;
             history.StationsId = queueHistory.StationsId;
@@ -74,6 +75,16 @@ namespace FuelQueManagement_Service.Services
             var multiUpdateDefinition = Builders<FuelStationModel>.Update
                 .Push(u => u.QueueHistory, history);
             var pushNotificationsResult = await _Collection.UpdateOneAsync(firstStationFilter, multiUpdateDefinition);
+        }
+
+        // This is required to get the queue time 
+        public async Task<string> GetQueueTime(QueueModel queue)
+        {
+            var arivalTime = queue.ArivalTime?.ToString("hh:mm tt");
+            var currentTime = DateTime.Now.ToString("hh:mm tt");
+            var timeDefferance = DateTime.Parse(currentTime).Subtract(DateTime.Parse(arivalTime));
+            return timeDefferance.ToString();
+
         }
 
     }
