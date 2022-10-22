@@ -1,9 +1,7 @@
 ﻿using FuelQueManagement_Service.Models;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
 
 namespace FuelQueManagement_Service.Services
 {
