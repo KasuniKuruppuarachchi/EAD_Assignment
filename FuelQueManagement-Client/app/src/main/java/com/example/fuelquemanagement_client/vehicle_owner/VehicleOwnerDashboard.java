@@ -1,5 +1,6 @@
 package com.example.fuelquemanagement_client.vehicle_owner;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ArrayList;
@@ -22,9 +23,12 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.fuelquemanagement_client.R;
+import com.example.fuelquemanagement_client.constants.VolleyCallback;
 import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.models.Queue;
 import com.example.fuelquemanagement_client.constants.Constants;
@@ -34,9 +38,12 @@ import com.example.fuelquemanagement_client.vehicle_owner.controllers.vehicleDas
 public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnClickListener {
 
     private User loggedUser;
+    private Button btnJoinQueue;
+    private String timeDuration = "0";
     private FuelStation fuelStation;
     private TextView txtPetrolStatus;
     private TextView txtDieselStatus;
+    private TextView txtTimeDuration;
     private FuelStation selectedFuelStation = new FuelStation();
     private CardView cardPetrolStatus, cardDieselStatus;
     private TextView txtVanCountDiesel, txtVanCountPetrol;
@@ -44,6 +51,7 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
     private TextView txtBusCountDiesel, txtBusCountPetrol;
     private TextView txt3WheelCountDiesel, txt3WheelCountPetrol;
     private TextView txtMotorBikeCountDiesel, txtMotorBikeCountPetrol;
+    Map<String,Integer> vehicleCounts = new HashMap<>();
 
     @Override
     public void onClick(View view) {
@@ -52,6 +60,7 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
                 Intent i = new Intent(VehicleOwnerDashboard.this, JoinQueue.class);
                 i.putExtra(Constants.LOGGED_USER, loggedUser);
                 i.putExtra(Constants.STATION, fuelStation);
+                i.putExtra(Constants.WAITING_TIME, timeDuration);
                 startActivity(i);
                 break;
             default:
@@ -71,10 +80,11 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
         getSupportActionBar().setTitle(fuelStation.getStationName() + " - " + fuelStation.getLocation());
         loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
 
-        getFuelStationById(fuelStation.getId());
-
-        Button btnJoinQueue = findViewById(R.id.btn_join);
+        btnJoinQueue = findViewById(R.id.btn_join);
         btnJoinQueue.setOnClickListener(this);
+
+        getFuelStationById(fuelStation.getId());
+       // getFuelStationCountById(fuelStation.getId());
 
         txtPetrolStatus = findViewById(R.id.txt_petrolStatus);
         txtDieselStatus = findViewById(R.id.txt_dieselStatus);
@@ -97,13 +107,36 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
         txtCarCountDiesel = findViewById(R.id.txt_carCountDiesel);
         txtCarCountPetrol = findViewById(R.id.txt_carCountPetrol);
 
+        txtTimeDuration = findViewById(R.id.txt_timeDuration);
+
         setFuelStatsInView();
+        getQueueTimeDuration(fuelStation.getId(), new VolleyCallback(){
+            @Override
+            public void onSuccess(String result){
+                System.out.println("In volleyCallBack"+result);
+                if(result == "0"){
+                    timeDuration = "0 hours";
+                    txtTimeDuration.setText("No Queues Better to Join");
+
+
+                }else {
+                    txtTimeDuration.setText("People are waiting at queue from " + result);
+                    timeDuration = result;
+                }
+
+            }
+            @Override
+            public void onError(String result) {
+
+            }
+        }
+        );
 
     }
 
     //Change the state of the fuel ( Available / Finish ) in the view according to the selected station's details
     private void setFuelStatsInView() {
-        if(fuelStation.isDieselStatus()){
+        if(fuelStation.isDieselStatus() || fuelStation.getTotalDiesel() != 0){
             txtDieselStatus.setText("Available");
             cardDieselStatus.setCardBackgroundColor(Color.parseColor("#ff99cc00"));
         }else{
@@ -111,7 +144,7 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
             cardDieselStatus.setCardBackgroundColor(Color.parseColor("#ffff4444"));
         }
 
-        if(fuelStation.isPetrolStatus()){
+        if(fuelStation.isPetrolStatus() || fuelStation.getTotalPetrol() != 0){
             txtPetrolStatus.setText("Available");
             cardPetrolStatus.setCardBackgroundColor(Color.parseColor("#ff99cc00"));
         }else{
@@ -127,6 +160,7 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
         RequestQueue mRequestQueue = Volley.newRequestQueue(this);
         String URL = Constants.BASE_URL + "/FuelStation/"+id;
         ArrayList<Queue> joinedQueues = new ArrayList<>();
+        final JsonArrayRequest[] jsonObjReqArray = new JsonArrayRequest[1];
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 URL, jsonObject,
@@ -166,6 +200,8 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
                             Map<String,Integer> vehicleCounts = vehicleDashboardController.getVehicleCounts(joinedQueues);
                             setQueueCountsInTexts(vehicleCounts);
 
+                            getFuelStationCountById(id, vehicleCounts);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -177,6 +213,7 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
             }
         });
         mRequestQueue.add(jsonObjReq);
+       // mRequestQueue.add(jsonObjReqArray[0]);
     }
 
     //Set the count of each queues texts in the view according tot eh fuel type and vehicle type
@@ -196,6 +233,8 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
 
         txtBusCountDiesel.setText(String.valueOf(vehicleCounts.get(Constants.BUS+Constants.DIESEL)));
         txtBusCountPetrol.setText(String.valueOf(vehicleCounts.get(Constants.BUS+Constants.PETROL)));
+
+
     }
 
     @Override
@@ -210,5 +249,82 @@ public class VehicleOwnerDashboard extends AppCompatActivity implements View.OnC
         }
         return true;
     }
+
+    private void getFuelStationCountById(String id, Map<String,Integer> vehicleCounts) {
+
+        JSONArray jsonArray = new JSONArray();
+        RequestQueue mRequestQueue = Volley.newRequestQueue(this);
+        String URL = Constants.BASE_URL + "/Queue/GetQueueLength?stationId="+id;
+        //ArrayList<Queue> joinedQueues = new ArrayList<>();
+
+        JsonArrayRequest jsonObjReq = new JsonArrayRequest(Request.Method.GET,
+                URL, jsonArray,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        try {
+                            System.out.println("Arrayyyy : "+response.get(1).toString());
+                            if(vehicleCounts.get(Constants.TOTAL_DIESEL_COUNT) >= Integer.valueOf(response.get(1).toString())){
+                               // btnJoinQueue.setEnabled(false);
+                            }else{
+                             //   btnJoinQueue.setEnabled(true);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(vehicleCounts.get(Constants.TOTAL_DIESEL_COUNT));
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+        mRequestQueue.add(jsonObjReq);
+    }
+
+
+    // find and retrieve the object of the fuel station which is owned by the logged station owner
+    public  void getQueueTimeDuration(String stationId, final VolleyCallback callback) {
+
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String api = Constants.BASE_URL + "/Queue/GetQueueTime?stationId="+stationId;
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, api,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                            System.out.println("Time Duration : ");
+                            System.out.println("Time Duration : "+ response.toString());
+                           // txtTimeDuration.setText("People are waiting at queue since "+response);
+                            //return response.toString();
+                        if(response.length() == 0){
+                            callback.onSuccess("0");
+                        }
+                        else {
+                            callback.onSuccess(response);
+                        }
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("That didn't work! +" + error.getLocalizedMessage());
+                    }
+                });
+
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+
 
 }

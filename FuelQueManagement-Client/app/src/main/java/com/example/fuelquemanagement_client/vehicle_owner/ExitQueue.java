@@ -48,7 +48,7 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
 
         joinedTime = getIntent().getStringExtra(Constants.JOINED_TIME);
         fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
-       // joinedQueue = (Queue) getIntent().getSerializableExtra(Constants.JOINED_QUEUE);
+        joinedQueue = (Queue) getIntent().getSerializableExtra(Constants.JOINED_QUEUE);
         loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
 
         btnExitAfter = findViewById(R.id.btn_exitAfter);
@@ -80,10 +80,11 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_exitAfter:
-               // exitQueueApi();
+                exitQueueApi(true);
                 Toast.makeText(this, "Clicked Exit After", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_exitBefore:
+                exitQueueApi(false);
                 Toast.makeText(this, "Clicked Exit Before", Toast.LENGTH_SHORT).show();
                 break;
             default:
@@ -92,10 +93,10 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
     }
 
     //When user clicks on exitFromQueue button, this updates the relevant fuel station with removed queue details
-    private void exitQueueApi() {
+    private void exitQueueApi(Boolean aquired) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = Constants.BASE_URL+"/Queue?fuelType="+joinedQueue.getFuelType()+"&stationId="+joinedQueue.stationsId+"&vehicleOwner="+joinedQueue.getVehicleOwner();
+        String url = Constants.BASE_URL+"/Queue?fuelType="+joinedQueue.getFuelType()+"&stationId="+joinedQueue.stationsId+"&queueId="+joinedQueue.getId()+"&aquired="+aquired;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest =  new StringRequest(Request.Method.DELETE, url,

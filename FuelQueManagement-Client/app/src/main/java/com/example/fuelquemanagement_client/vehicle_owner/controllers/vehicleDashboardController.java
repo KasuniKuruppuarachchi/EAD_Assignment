@@ -16,6 +16,7 @@ public class vehicleDashboardController {
         int wheelDieselCount = 0, wheelPetrolCount = 0;
         int carDieselCount = 0, carPetrolCount = 0;
         int busDieselCount = 0, busPetrolCount = 0;
+        int totalDieselCount = 0, totalPetrolCount = 0;
 
         for(Queue queue: joinedQueues){
 
@@ -70,6 +71,9 @@ public class vehicleDashboardController {
             /** ****** **/
         }
 
+        totalDieselCount = busDieselCount+carDieselCount+wheelDieselCount+vanDieselCount+motorBikeDieselCount;
+        totalPetrolCount = busPetrolCount+carPetrolCount+wheelPetrolCount+vanPetrolCount+motorBikePetrolCount;
+
         Map<String,Integer> vehicleCounts = new HashMap<>();
 
         vehicleCounts.put(Constants.MOTOR_BIKE+Constants.DIESEL, motorBikeDieselCount);
@@ -82,6 +86,8 @@ public class vehicleDashboardController {
         vehicleCounts.put(Constants.CAR+Constants.PETROL, carPetrolCount);
         vehicleCounts.put(Constants.BUS+Constants.DIESEL, busDieselCount);
         vehicleCounts.put(Constants.BUS+Constants.PETROL, busPetrolCount);
+        vehicleCounts.put(Constants.TOTAL_PETROL_COUNT, totalPetrolCount);
+        vehicleCounts.put(Constants.TOTAL_DIESEL_COUNT, totalDieselCount);
 
         return vehicleCounts;
 
@@ -100,4 +106,6 @@ public class vehicleDashboardController {
 //        );
 
     }
+
+
 }
