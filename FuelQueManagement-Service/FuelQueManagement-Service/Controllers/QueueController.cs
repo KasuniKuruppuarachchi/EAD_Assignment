@@ -1,9 +1,7 @@
 ﻿using FuelQueManagement_Service.Models;
 using FuelQueManagement_Service.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
+
 
 namespace FuelQueManagement_Service.Controllers
 {
@@ -13,8 +11,12 @@ namespace FuelQueManagement_Service.Controllers
     {
         // Declearing the fuel station service instance
         private readonly QueueService _queueService;
-        public QueueController(QueueService queueService) =>
+        private readonly FuelStationService _fuelStationService;
+        public QueueController(QueueService queueService, FuelStationService fuelStationService)
+        {
             _queueService = queueService;
+            _fuelStationService = fuelStationService;
+        }
 
         // This is required to create a queue object
         [HttpPost]
@@ -33,17 +35,72 @@ namespace FuelQueManagement_Service.Controllers
 
         // This is required to delete a queue object
         [HttpDelete]
-        public async Task<FuelStationModel> Delete(string fuelType, string stationId, string vehicleOwner)
+        public async Task<FuelStationModel> Delete(string fuelType, string stationId, string queueId, bool aquired)
         {
             try
             {
-                var res = await _queueService.Delete(fuelType,stationId,vehicleOwner);
+                if (aquired)
+                {
+                    QueueModel queue = new QueueModel();
+                    var station = await _fuelStationService.GetStationByQueueId(queueId);
+                    _queueService.UpdateQueueHistory(stationId, station.Queue[0]);
+                    var currentAmount = await _fuelStationService.getCurrentFuelAmount(stationId, fuelType);
+                    _fuelStationService.ReduceFromTotalFuelAmount(stationId, 20, fuelType, currentAmount);
+                }
+
+                var res = await _queueService.Delete(fuelType, stationId, queueId);
                 return res;
+
             }
             catch (Exception e)
             {
                 return null;
             }
+        }
+
+        // This is required to get the station by queue Id
+        [HttpGet]
+        [Route("GetStation")]
+        public async Task<FuelStationModel> GetStation(string queueId)
+        {
+            return await _fuelStationService.GetStationByQueueId(queueId);
+        }
+
+        // This is required to get the queue time
+        [HttpGet]
+        [Route("GetQueueTime")]
+        public async Task<string> GetQueueTime(string stationId)
+        {
+            try
+            {
+                var station = await _fuelStationService.GetFuelStationById(stationId);
+                var res = await _queueService.GetQueueTime(station.Queue[0]);
+
+                return res;
+            }
+            catch(Exception ex)
+            {
+                return "";
+            }
+
+        }
+
+        // This is required to getthe queue length
+        [HttpGet]
+        [Route("GetQueueLength")]
+        public async Task<Array> GetQueueLength(string stationId)
+        {
+            try
+            {
+                var station = await _fuelStationService.GetFuelStationById(stationId);
+                var res = await _queueService.GetQueueLength(station);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
         }
 
     }

@@ -1,9 +1,6 @@
 ﻿using FuelQueManagement_Service.Models;
 using FuelQueManagement_Service.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using System.Globalization;
 
 namespace FuelQueManagement_Service.Controllers;
 
@@ -25,7 +22,7 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.Create(request);
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }
@@ -40,7 +37,7 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.GetFuelStations();
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }
@@ -55,14 +52,14 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.GetFuelStationById(id);
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }
     }
 
     // This is required to update diesel status
-    [HttpPost]
+    [HttpPut]
     [Route("UpdateDieselStatus")]
     public async Task<FuelStationModel> UpdateDieselStatus(bool status, string id)
     {
@@ -71,14 +68,14 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.UpdateDieselStatus(status, id);
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }
     }
 
     // This is required to update petrol status
-    [HttpPost]
+    [HttpPut]
     [Route("UpdatePetrolStatus")]
     public async Task<FuelStationModel> UpdatePetrolStatus(bool status, string id)
     {
@@ -87,9 +84,25 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.UpdatePetrolStatus(status, id);
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
+        }
+    }
+
+    [HttpPut]
+    [Route("UpdateFuelAmount")]
+    // This is required to update the total fuel amount
+    public async void UpdateTotalFuelAmount(string stationId, int amount, string type)
+    {
+        try
+        {
+            var currentAmount = await _fuelStationService.getCurrentFuelAmount(stationId, type);
+            _fuelStationService.UpdateTotalFuelAmount(stationId, amount, type, currentAmount);
+        }
+        catch(Exception ex)
+        {
+
         }
     }
 }
