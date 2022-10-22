@@ -25,7 +25,7 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.Create(request);
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }
@@ -40,7 +40,7 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.GetFuelStations();
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }
@@ -55,7 +55,7 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.GetFuelStationById(id);
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }
@@ -71,7 +71,7 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.UpdateDieselStatus(status, id);
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
         }
@@ -87,9 +87,25 @@ public class FuelStationController : ControllerBase
             var res = await _fuelStationService.UpdatePetrolStatus(status, id);
             return res;
         }
-        catch
+        catch (Exception ex)
         {
             return null;
+        }
+    }
+
+    [HttpPost]
+    [Route("UpdateFuelAmount")]
+    // This is required to update the total fuel amount
+    public async void UpdateTotalFuelAmount(string stationId, int amount, string type)
+    {
+        try
+        {
+            var currentAmount = await _fuelStationService.getCurrentFuelAmount(stationId, type);
+            _fuelStationService.UpdateTotalFuelAmount(stationId, amount, type, currentAmount);
+        }
+        catch(Exception ex)
+        {
+
         }
     }
 }

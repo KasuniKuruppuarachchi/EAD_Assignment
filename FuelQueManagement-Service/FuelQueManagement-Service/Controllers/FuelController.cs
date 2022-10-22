@@ -15,8 +15,12 @@ public class FuelController : ControllerBase
 {
     //Declearing the fuel service instance
     private readonly FuelService _fuelService;
-    public FuelController(FuelService fuelService) =>
+    private readonly FuelStationService _fuelStationService;
+    public FuelController(FuelService fuelService, FuelStationService fuelStationService)
+    {
         _fuelService = fuelService;
+        _fuelStationService = fuelStationService;
+    }
 
     //This is required to create a fuel object 
     [HttpPost]
@@ -24,6 +28,8 @@ public class FuelController : ControllerBase
     {
         try
         {
+            var currentAmount = await _fuelStationService.getCurrentFuelAmount(request.StationsId, request.Type);
+            _fuelStationService.UpdateTotalFuelAmount(request.StationsId, request.Amount, request.Type, currentAmount);
             var res = await _fuelService.Create(request);
             return res;
         }

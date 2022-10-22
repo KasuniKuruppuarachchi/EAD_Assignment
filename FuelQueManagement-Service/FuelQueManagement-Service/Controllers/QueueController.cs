@@ -13,8 +13,13 @@ namespace FuelQueManagement_Service.Controllers
     {
         // Declearing the fuel station service instance
         private readonly QueueService _queueService;
-        public QueueController(QueueService queueService) =>
+        private readonly FuelStationService _fuelStationService;
+        public QueueController(QueueService queueService, FuelStationService fuelStationService)
+        {
             _queueService = queueService;
+            _fuelStationService = fuelStationService;
+
+        }
 
         // This is required to create a queue object
         [HttpPost]
@@ -33,17 +38,32 @@ namespace FuelQueManagement_Service.Controllers
 
         // This is required to delete a queue object
         [HttpDelete]
-        public async Task<FuelStationModel> Delete(string fuelType, string stationId, string vehicleOwner)
+        public async Task<FuelStationModel> Delete(string fuelType, string stationId, string queueId, bool aquired)
         {
             try
             {
-                var res = await _queueService.Delete(fuelType,stationId,vehicleOwner);
+                if (aquired)
+                {
+                    QueueModel queue = new QueueModel();
+                    var station = await _fuelStationService.GetStationByQueueId(queueId);
+                    _queueService.UpdateQueueHistory(stationId, station.Queue[0]);
+                }
+
+                var res = await _queueService.Delete(fuelType, stationId, queueId);
                 return res;
+
             }
             catch (Exception e)
             {
                 return null;
             }
+        }
+
+        [HttpGet]
+        [Route("Getstation")]
+        public async Task<FuelStationModel> Getstation(string queueId)
+        {
+            return await _fuelStationService.GetStationByQueueId(queueId);
         }
 
     }

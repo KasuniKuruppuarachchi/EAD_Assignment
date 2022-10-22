@@ -30,7 +30,7 @@ namespace FuelQueManagement_Service.Services
                 queueModel.VehicleOwner = request.VehicleOwner;
                 queueModel.FuelType = request.FuelType;
                 queueModel.StationsId = request.StationsId;
-                queueModel.LastModified = DateTime.Now;
+                queueModel.ArivalTime = DateTime.Now;
 
                 var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, request.StationsId);
                 var multiUpdate = Builders<FuelStationModel>.Update
@@ -42,7 +42,7 @@ namespace FuelQueManagement_Service.Services
         }
 
         //This is required to delete a queue object 
-        public async Task<FuelStationModel> Delete(string fuelType, string stationId, string vehicleOwner)
+        public async Task<FuelStationModel> Delete(string fuelType, string stationId, string queueId)
         {
                 // create a filter
                 var fuelStationObject = Builders<FuelStationModel>
@@ -50,12 +50,31 @@ namespace FuelQueManagement_Service.Services
                     queue => queue.FuelType == fuelType);
                 var pullVehicle = Builders<FuelStationModel>.Update
                     .PullFilter(t => t.Queue,
-                        queue => queue.VehicleOwner == vehicleOwner);
+                        queue => queue.Id == queueId);
                 var result = await _Collection
                     .UpdateManyAsync(fuelStationObject, pullVehicle);
                 var res = _Collection.Find(_ => true).Limit(1).SortByDescending(i => i.Id).ToList();
 
                 return res[0];
         }
+
+        //This is required to create a queue history object 
+        public async void UpdateQueueHistory(string stationId, QueueModel queueHistory)
+        {
+            FuelStationModel fuelStation = new FuelStationModel();
+            var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, stationId);
+            QueueModel history = new QueueModel();
+            history.VehicleType = queueHistory.VehicleType;
+            history.VehicleOwner = queueHistory.VehicleOwner;
+            history.StationsId = queueHistory.StationsId;
+            history.FuelType = queueHistory.FuelType;
+            history.ArivalTime = queueHistory.ArivalTime;
+            history.DepartTime = DateTime.Now;
+
+            var multiUpdateDefinition = Builders<FuelStationModel>.Update
+                .Push(u => u.QueueHistory, history);
+            var pushNotificationsResult = await _Collection.UpdateOneAsync(firstStationFilter, multiUpdateDefinition);
+        }
+
     }
 }
