@@ -101,7 +101,7 @@ public class StationOwnerDashboard extends AppCompatActivity {
 
                 URL_to_send = URL_petrol.concat(stationID);
 
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_to_send, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL_to_send, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.i("LOG_VOLLEY", response);
@@ -151,7 +151,7 @@ public class StationOwnerDashboard extends AppCompatActivity {
                 URL_to_send = URL_diesel.concat(stationID);
 
                 System.out.println("Send this " + URL_to_send);
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_to_send, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL_to_send, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.i("LOG_VOLLEY", response);
