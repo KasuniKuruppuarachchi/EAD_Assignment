@@ -1,4 +1,5 @@
 ﻿using FuelQueManagement_Service.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -9,7 +10,8 @@ namespace FuelQueManagement_Service.Services
     {
         //creating the database connection
         private readonly IMongoCollection<FuelStationModel> _Collection;
-        public QueueService(IOptions<DatabaseConnection> datbaseConnection)
+        private readonly IConfiguration _Configuration;
+        public QueueService(IOptions<DatabaseConnection> datbaseConnection, IConfiguration iConfig)
         {
             var mongoClient = new MongoClient(
                 datbaseConnection.Value.ConnectionString);
@@ -19,6 +21,8 @@ namespace FuelQueManagement_Service.Services
 
             _Collection = mongoDatabase.GetCollection<FuelStationModel>(
                 datbaseConnection.Value.CollectionName);
+
+            _Configuration = iConfig;
         }
 
         //This is required to create a queue object 
@@ -90,8 +94,9 @@ namespace FuelQueManagement_Service.Services
         public async Task<Array> GetQueueLength(FuelStationModel station)
         {
             int[] queueLengthArray = new int[2];
-            int petrolQueueLength =  station.TotalPetrol / 20;
-            int dieselQueueLength =  station.TotalDiesel / 20;
+            int letersPerVehicle =  _Configuration.GetValue<int>("LetersPerVehicle");
+            int petrolQueueLength = station.TotalPetrol / letersPerVehicle;
+            int dieselQueueLength =  station.TotalDiesel / letersPerVehicle;
             queueLengthArray[0] = petrolQueueLength;
             queueLengthArray[1] = dieselQueueLength;
 
