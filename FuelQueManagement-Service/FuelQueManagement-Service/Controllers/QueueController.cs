@@ -47,6 +47,8 @@ namespace FuelQueManagement_Service.Controllers
                     QueueModel queue = new QueueModel();
                     var station = await _fuelStationService.GetStationByQueueId(queueId);
                     _queueService.UpdateQueueHistory(stationId, station.Queue[0]);
+                    var currentAmount = await _fuelStationService.getCurrentFuelAmount(stationId, fuelType);
+                    _fuelStationService.ReduceFromTotalFuelAmount(stationId, 20, fuelType, currentAmount);
                 }
 
                 var res = await _queueService.Delete(fuelType, stationId, queueId);
@@ -59,11 +61,31 @@ namespace FuelQueManagement_Service.Controllers
             }
         }
 
+        // This is required to get the station by queue Id
         [HttpGet]
-        [Route("Getstation")]
-        public async Task<FuelStationModel> Getstation(string queueId)
+        [Route("GetStation")]
+        public async Task<FuelStationModel> GetStation(string queueId)
         {
             return await _fuelStationService.GetStationByQueueId(queueId);
+        }
+
+        // This is required to get the queue time
+        [HttpGet]
+        [Route("GetQueueTime")]
+        public async Task<string> GetQueueTime(string stationId)
+        {
+            try
+            {
+                var station = await _fuelStationService.GetFuelStationById(stationId);
+                var res = await _queueService.GetQueueTime(station.Queue[0]);
+
+                return res;
+            }
+            catch(Exception ex)
+            {
+                return "";
+            }
+
         }
 
     }
