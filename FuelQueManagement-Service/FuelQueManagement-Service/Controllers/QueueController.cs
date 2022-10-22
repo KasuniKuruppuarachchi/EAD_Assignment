@@ -1,9 +1,7 @@
 ﻿using FuelQueManagement_Service.Models;
 using FuelQueManagement_Service.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
+
 
 namespace FuelQueManagement_Service.Controllers
 {
@@ -18,7 +16,6 @@ namespace FuelQueManagement_Service.Controllers
         {
             _queueService = queueService;
             _fuelStationService = fuelStationService;
-
         }
 
         // This is required to create a queue object
@@ -84,6 +81,24 @@ namespace FuelQueManagement_Service.Controllers
             catch(Exception ex)
             {
                 return "";
+            }
+
+        }
+
+        // This is required to getthe queue length
+        [HttpGet]
+        [Route("GetQueueLength")]
+        public async Task<Array> GetQueueLength(string stationId)
+        {
+            try
+            {
+                var station = await _fuelStationService.GetFuelStationById(stationId);
+                var res = await _queueService.GetQueueLength(station);
+                return res;
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
 
         }

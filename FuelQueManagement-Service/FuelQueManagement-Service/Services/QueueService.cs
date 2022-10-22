@@ -84,6 +84,18 @@ namespace FuelQueManagement_Service.Services
             var currentTime = DateTime.Now.ToString("hh:mm tt");
             var timeDefferance = DateTime.Parse(currentTime).Subtract(DateTime.Parse(arivalTime));
             return timeDefferance.ToString();
+        }
+
+        // This is required to getthe queue length
+        public async Task<Array> GetQueueLength(FuelStationModel station)
+        {
+            int[] queueLengthArray = new int[2];
+            int petrolQueueLength =  station.TotalPetrol / 20;
+            int dieselQueueLength =  station.TotalDiesel / 20;
+            queueLengthArray[0] = petrolQueueLength;
+            queueLengthArray[1] = dieselQueueLength;
+
+            return queueLengthArray;
 
         }
 

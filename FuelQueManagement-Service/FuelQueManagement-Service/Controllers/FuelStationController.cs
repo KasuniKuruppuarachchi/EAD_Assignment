@@ -1,9 +1,6 @@
 ﻿using FuelQueManagement_Service.Models;
 using FuelQueManagement_Service.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
-using System.Globalization;
 
 namespace FuelQueManagement_Service.Controllers;
 
@@ -62,7 +59,7 @@ public class FuelStationController : ControllerBase
     }
 
     // This is required to update diesel status
-    [HttpPost]
+    [HttpPut]
     [Route("UpdateDieselStatus")]
     public async Task<FuelStationModel> UpdateDieselStatus(bool status, string id)
     {
@@ -78,7 +75,7 @@ public class FuelStationController : ControllerBase
     }
 
     // This is required to update petrol status
-    [HttpPost]
+    [HttpPut]
     [Route("UpdatePetrolStatus")]
     public async Task<FuelStationModel> UpdatePetrolStatus(bool status, string id)
     {
@@ -93,7 +90,7 @@ public class FuelStationController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPut]
     [Route("UpdateFuelAmount")]
     // This is required to update the total fuel amount
     public async void UpdateTotalFuelAmount(string stationId, int amount, string type)
