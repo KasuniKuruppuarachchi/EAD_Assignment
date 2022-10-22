@@ -1,6 +1,7 @@
 ﻿using FuelQueManagement_Service.Models;
 using FuelQueManagement_Service.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 
 namespace FuelQueManagement_Service.Controllers
@@ -12,10 +13,13 @@ namespace FuelQueManagement_Service.Controllers
         // Declearing the fuel station service instance
         private readonly QueueService _queueService;
         private readonly FuelStationService _fuelStationService;
-        public QueueController(QueueService queueService, FuelStationService fuelStationService)
+        private readonly IConfiguration _Configuration;
+
+        public QueueController(QueueService queueService, FuelStationService fuelStationService, IConfiguration iConfig)
         {
             _queueService = queueService;
             _fuelStationService = fuelStationService;
+            _Configuration = iConfig;
         }
 
         // This is required to create a queue object
@@ -45,7 +49,8 @@ namespace FuelQueManagement_Service.Controllers
                     var station = await _fuelStationService.GetStationByQueueId(queueId);
                     _queueService.UpdateQueueHistory(stationId, station.Queue[0]);
                     var currentAmount = await _fuelStationService.getCurrentFuelAmount(stationId, fuelType);
-                    _fuelStationService.ReduceFromTotalFuelAmount(stationId, 20, fuelType, currentAmount);
+                    int letersPerVehicle = _Configuration.GetValue<int>("LetersPerVehicle");
+                    _fuelStationService.ReduceFromTotalFuelAmount(stationId, letersPerVehicle, fuelType, currentAmount);
                 }
 
                 var res = await _queueService.Delete(fuelType, stationId, queueId);
