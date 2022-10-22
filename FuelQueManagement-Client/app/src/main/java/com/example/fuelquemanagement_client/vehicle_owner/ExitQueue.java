@@ -48,7 +48,7 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
 
         joinedTime = getIntent().getStringExtra(Constants.JOINED_TIME);
         fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
-        joinedQueue = (Queue) getIntent().getSerializableExtra(Constants.JOINED_QUEUE);
+       // joinedQueue = (Queue) getIntent().getSerializableExtra(Constants.JOINED_QUEUE);
         loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
 
         btnExitAfter = findViewById(R.id.btn_exitAfter);
@@ -80,7 +80,7 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_exitAfter:
-                exitQueueApi();
+               // exitQueueApi();
                 Toast.makeText(this, "Clicked Exit After", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_exitBefore:
