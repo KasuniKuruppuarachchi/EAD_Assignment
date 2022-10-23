@@ -27,7 +27,7 @@ namespace FuelQueManagement_Service.Services
             fuelStation.Name = request.Name;
             fuelStation.Location = request.Location;
             fuelStation.StationOwner = request.StationOwner;
-            fuelStation.LastModified = DateTime.Now;
+            fuelStation.LastModified = DateTime.Now.ToString();
             fuelStation.DieselStatus = false;
             fuelStation.PetrolStatus = false;
             fuelStation.TotalPetrol = 0;
