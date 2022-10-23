@@ -13,10 +13,10 @@ namespace FuelQueManagement_Service.Models
         public string VehicleOwner { get; set; }
         public string? StationsId { get; set; }
         public string? FuelType { get; set; }
-        public DateTime? ArivalTime { get; set; }
-        public DateTime? DepartTime { get; set; }
+        public string? ArivalTime { get; set; }
+        public string? DepartTime { get; set; }
 
-        public QueueModel(string vehicleType, string owner, DateTime? arivalTime, DateTime? departTime)
+        public QueueModel(string vehicleType, string owner, string? arivalTime, string? departTime)
         {
             VehicleType = vehicleType;
             VehicleOwner = owner;

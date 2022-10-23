@@ -34,7 +34,7 @@ namespace FuelQueManagement_Service.Services
                 queueModel.VehicleOwner = request.VehicleOwner;
                 queueModel.FuelType = request.FuelType;
                 queueModel.StationsId = request.StationsId;
-                queueModel.ArivalTime = DateTime.Now;
+                queueModel.ArivalTime = DateTime.Now.ToString();
 
                 var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, request.StationsId);
                 var multiUpdate = Builders<FuelStationModel>.Update
@@ -74,7 +74,7 @@ namespace FuelQueManagement_Service.Services
             history.StationsId = queueHistory.StationsId;
             history.FuelType = queueHistory.FuelType;
             history.ArivalTime = queueHistory.ArivalTime;
-            history.DepartTime = DateTime.Now;
+            history.DepartTime = DateTime.Now.ToString();
 
             var multiUpdateDefinition = Builders<FuelStationModel>.Update
                 .Push(u => u.QueueHistory, history);
@@ -84,7 +84,7 @@ namespace FuelQueManagement_Service.Services
         // This is required to get the queue time 
         public async Task<string> GetQueueTime(QueueModel queue)
         {
-            var arivalTime = queue.ArivalTime?.ToString("hh:mm tt");
+            var arivalTime = DateTime.Parse(queue.ArivalTime).ToString("hh:mm tt");
             var currentTime = DateTime.Now.ToString("hh:mm tt");
             var timeDefferance = DateTime.Parse(currentTime).Subtract(DateTime.Parse(arivalTime));
             return timeDefferance.ToString();
