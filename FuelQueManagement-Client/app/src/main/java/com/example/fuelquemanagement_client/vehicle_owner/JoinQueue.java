@@ -48,7 +48,10 @@ import com.example.fuelquemanagement_client.models.FuelStation;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.vehicle_owner.controllers.vehicleDashboardController;
 
-
+/**
+ * The JoinQueue class facilitates the vehicle owner to enter a queue in the selected station by filling the required details
+ * in the form in this activity
+ */
 public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private FuelStation selectedFuelStation = new FuelStation();

@@ -1,6 +1,8 @@
 package com.example.fuelquemanagement_client.constants;
 
-
+/**
+ * The Constants class keeps all the constants in the application
+ */
 public class Constants {
 
     public static final String ROLE = "Role";

@@ -12,6 +12,7 @@
         android:id="@+id/edtTxt_searchStation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:drawableRight="@android:drawable/ic_menu_search"
         android:hint="Search Fuel Station" />
 
     <ListView

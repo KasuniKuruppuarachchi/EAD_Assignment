@@ -24,10 +24,15 @@ import com.android.volley.toolbox.StringRequest;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.fuelquemanagement_client.databinding.ActivityMainBinding;
 import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.models.FuelStation;
 import com.example.fuelquemanagement_client.constants.Constants;
 
+/**
+ * The SelectionStation class is shown all the Fuel Stations in Listview and Give facility to  search them through Location
+ */
 public class SelectionStation extends AppCompatActivity {
 
     private User loggedUser;
@@ -89,12 +94,24 @@ public class SelectionStation extends AppCompatActivity {
                             edSearchStation.addTextChangedListener(new TextWatcher() {
                                 @Override
                                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                                    adapter.getFilter().filter(s);
+
                                 }
 
                                 @Override
                                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                                   // adapter.getFilter().filter(s);
+                                   ArrayList<FuelStation> filteredShapes = new ArrayList<FuelStation>();
+                                    String selectedFilter = "all";
+                                    for(FuelStation shape: stations)
+                                    {
+                                        if(shape.getLocation().toLowerCase().contains(String.valueOf(s).toLowerCase()))
+                                        {
+                                                filteredShapes.add(shape);
+                                        }
+                                    }
 
+                                    StationAdapter adapter = new StationAdapter(SelectionStation.this , R.layout.single_station, filteredShapes,loggedUser);
+                                    stationView.setAdapter(adapter);
                                 }
 
                                 @Override
