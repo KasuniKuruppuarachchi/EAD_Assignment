@@ -150,65 +150,7 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
         return true;
     }
 
-    /*When user clicks on the Confirm Join button to enter to a queue this method executes and this update relevant the fuel station
-    along with the entered queue details*/
-//    private void addQueueAPI(String vehicleType, String vehicleOwnerId, String stationId, String fuelType) {
-//        try {
-//
-//            RequestQueue requestQueue = Volley.newRequestQueue(this);
-//            String URL = Constants.BASE_URL + "/Queue";
-//
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("id", null);
-//            jsonObject.put("vehicleType", vehicleType);
-//            jsonObject.put("vehicleOwner", vehicleOwnerId);
-//            jsonObject.put("stationsId", stationId);
-//            jsonObject.put("fuelType", fuelType);
-//
-//            final String mRequestBody = jsonObject.toString();
-//
-//            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String response) {
-//                    Log.i("LOG_VOLLEY", response);
-//                    System.out.println("Join Queue : "+response);
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    Log.e("LOG_VOLLEY", error.toString());
-//                }
-//            }) {
-//                @Override
-//                public String getBodyContentType() {
-//                    return "application/json; charset=utf-8";
-//                }
-//
-//                @Override
-//                public byte[] getBody() throws AuthFailureError {
-//                    try {
-//                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-//                    } catch (UnsupportedEncodingException uee) {
-//                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-//                        return null;
-//                    }
-//                }
-//
-//                @Override
-//                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//                    String responseString = "";
-//                    if (response != null) {
-//                        responseString = String.valueOf(response.statusCode);
-//                    }
-//                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-//                }
-//            };
-//            requestQueue.add(stringRequest);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
+    //Vehicle Owner enrolled to the queue
     private void addQueueAPI(String vehicleType, String vehicleOwnerId, String stationId, String fuelType) {
         JSONObject jsonObject = new JSONObject();
         RequestQueue mRequestQueue = Volley.newRequestQueue(this);
@@ -268,7 +210,6 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
         mRequestQueue.add(jsonObjReq);
     }
 
-
     // Get the selected station's object through the id via api call from remote database
     private void getFuelStationById(String id, String fuelType) {
 
@@ -325,6 +266,7 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
         mRequestQueue.add(jsonObjReq);
     }
 
+    //Get the total number of vehicles that allocated in the selected fuel station
     private void getFuelStationCountById(String id, Map<String,Integer> vehicleCounts) {
 
         JSONArray jsonArray = new JSONArray();
@@ -371,8 +313,8 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
        // int checkedItem = 1;
         alertDialog.setMessage(
                 "" +
-                        "You can not entered to the "+fuelType+"\n " +
-                        "Queue, Because queue is full or " + fuelType+
+                        "You can not entered to the "+fuelType+
+                        " Queue, Because queue is full or " + fuelType+
                         " is finished"
         )
                 .setCancelable(false)
