@@ -50,7 +50,6 @@ import com.example.fuelquemanagement_client.vehicle_owner.controllers.vehicleDas
 
 
 public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
-
     private FuelStation selectedFuelStation = new FuelStation();
     private Spinner dropdownVehicleType, dropdownFuelType;
     private String timeDuration = "0";
