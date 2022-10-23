@@ -29,6 +29,9 @@ import com.example.fuelquemanagement_client.models.User;
 import com.example.fuelquemanagement_client.station_owner.StationOwnerDashboard;
 import com.example.fuelquemanagement_client.vehicle_owner.SelectionStation;
 
+/**
+ * The LoginScreen class facilitates the application user to login to the application
+ */
 public class LoginScreen extends AppCompatActivity implements View.OnClickListener {
 
     final FuelStation[] registeredFuelStation = {new FuelStation()};

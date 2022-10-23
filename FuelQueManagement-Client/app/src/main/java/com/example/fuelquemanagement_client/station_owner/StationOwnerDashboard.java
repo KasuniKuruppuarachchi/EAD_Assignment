@@ -28,7 +28,9 @@ import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.FuelStation;
 
-
+/**
+ * The StationOwnerDashboard class facilitates the Station Owner see a dashboard view for the Fuel Station including fuel status
+ */
 public class StationOwnerDashboard extends AppCompatActivity {
     private Button btn_update_fuel;
     private RadioGroup radioGroupPetrol, radioGroupDiesel;

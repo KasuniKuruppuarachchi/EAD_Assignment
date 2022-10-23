@@ -41,6 +41,9 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 
+/**
+ * The FuelUpdateForm class facilitates Station Owner to enter the details fuel arrivals of the fuel station
+ */
 public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private TextView tv_arrival_date, tv_arrival_time;
     private int hour, min;
