@@ -74,7 +74,7 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_login_screen);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Log In");
+        getSupportActionBar().setTitle("Sign In");
 
         edUserName = findViewById(R.id.edtTxt_username);
         edPassword = findViewById(R.id.edtTxt_password);

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -25,42 +26,62 @@ import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.MainActivity;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
-import com.example.fuelquemanagement_client.models.Fuel;
 import com.example.fuelquemanagement_client.models.FuelStation;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class StationOwnerDashboard extends AppCompatActivity {
     private Button btn_update_fuel;
-    private RadioGroup radioGroupPetrol;
-    private RadioGroup radioGroupDiesel;
-    private RadioButton rbPetrol, rbDiesel;
-    private int petrolStatus;
-    private int dieselStatus;
-    private String stationID = "63516919644eac12a2f7eb9f";
+    private RadioGroup radioGroupPetrol, radioGroupDiesel;
+    private RadioButton rbPetrol, rbPetrolAvailable, rbPetrolFinish;
+    private RadioButton rbDiesel, rbDieselAvailable, rbDieselFinish;
+    private String stationID;
+    private boolean status_petrol, status_diesel;
     private FuelStation fuelStation;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // App Bar
         setContentView(R.layout.activity_station_owner_dashboard);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
-
-        getSupportActionBar().setTitle(fuelStation.getStationName() + " - " + fuelStation.getLocation());
+        getSupportActionBar().setTitle("Station Owner Dashboard");
 
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
+        fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
+        stationID = fuelStation.getId();
         btn_update_fuel = findViewById(R.id.btn_update_fuel);
         radioGroupPetrol = findViewById(R.id.rad_group_petrol);
         radioGroupDiesel = findViewById(R.id.rad_group_diesel);
+        rbDieselFinish = findViewById(R.id.rad_diesel_finish);
+        rbDieselAvailable = findViewById(R.id.rad_diesel_available);
+        rbPetrolFinish = findViewById(R.id.rad_petrol_finish);
+        rbPetrolAvailable = findViewById(R.id.rad_petrol_available);
+        textView = findViewById(R.id.txt_station_name);
 
+        // Setting station name and location on the interface
+        textView.setText(fuelStation.getStationName() + " - " + fuelStation.getLocation());
+
+        status_petrol = fuelStation.isPetrolStatus();
+        status_diesel = fuelStation.isDieselStatus();
+
+        // Setting the current Diesel Status on the interface
+        if(status_diesel == false) {
+            rbDieselFinish.setChecked(true);
+        } else {
+            rbDieselAvailable.setChecked(true);
+        }
+
+        // Setting the current Petrol Status on the interface
+        if(status_petrol == false) {
+            rbPetrolFinish.setChecked(true);
+        } else {
+            rbPetrolAvailable.setChecked(true);
+        }
+
+        // Onclick function for Petrol Status Radio Button
         radioGroupPetrol.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -72,15 +93,15 @@ public class StationOwnerDashboard extends AppCompatActivity {
 
                 if(rbPetrol.getText().toString().equals("Available")) {
                     System.out.println("Send Petrol as available");
-                    URL_petrol = "http://192.168.25.70:5000/FuelStation/UpdatePetrolStatus?status=true&id=";
+                    URL_petrol = Constants.BASE_URL + "/FuelStation/UpdatePetrolStatus?status=true&id=";
                 } else {
                     System.out.println("Send Petrol as finished");
-                    URL_petrol = "http://192.168.25.70:5000/FuelStation/UpdatePetrolStatus?status=false&id=";
+                    URL_petrol = Constants.BASE_URL + "/FuelStation/UpdatePetrolStatus?status=false&id=";
                 }
 
                 URL_to_send = URL_petrol.concat(stationID);
 
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_to_send, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL_to_send, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.i("LOG_VOLLEY", response);
@@ -109,6 +130,7 @@ public class StationOwnerDashboard extends AppCompatActivity {
             }
         });
 
+        // Onclick function for Diesel Status Radio Button
         radioGroupDiesel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -120,16 +142,16 @@ public class StationOwnerDashboard extends AppCompatActivity {
 
                 if(rbDiesel.getText().toString().equals("Available")) {
                     System.out.println("Send Diesel as available");
-                    URL_diesel = "http://192.168.25.70:5000/FuelStation/UpdateDieselStatus?status=true&id=";
+                    URL_diesel = Constants.BASE_URL + "/FuelStation/UpdateDieselStatus?status=true&id=";
                 } else {
                     System.out.println("Send Diesel as finished");
-                    URL_diesel = "http://192.168.25.70:5000/FuelStation/UpdateDieselStatus?status=false&id=";
+                    URL_diesel = Constants.BASE_URL + "/FuelStation/UpdateDieselStatus?status=false&id=";
                 }
 
                 URL_to_send = URL_diesel.concat(stationID);
 
                 System.out.println("Send this " + URL_to_send);
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_to_send, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL_to_send, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.i("LOG_VOLLEY", response);
@@ -158,10 +180,12 @@ public class StationOwnerDashboard extends AppCompatActivity {
             }
         });
 
+        // Update Fuel station button navigation
         btn_update_fuel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(StationOwnerDashboard.this, FuelUpdateForm.class);
+                intent.putExtra(Constants.STATION, fuelStation);
                 startActivity(intent);
             }
         });
@@ -178,105 +202,4 @@ public class StationOwnerDashboard extends AppCompatActivity {
         }
         return true;
     }
-
-//    public void requestWithHttpHeaders(String url, String id, String status) {
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        StringRequest getRequest = new StringRequest(Request.Method.POST, url,
-//                new Response.Listener<String>()
-//                {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // response
-//                        Log.d("Response", response);
-//                    }
-//                },
-//                new Response.ErrorListener()
-//                {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        // TODO Auto-generated method stub
-//                        Log.d("ERROR","error => "+error.toString());
-//                    }
-//                }
-//        ) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String>  params = new HashMap<String, String>();
-//                params.put("status", status);
-//                params.put("id", id);
-//
-//                return params;
-//            }
-//        };
-//        queue.add(getRequest);
-//    }
-
-//    public Request post(String url, String status, String password, Listener listener, ErrorListener errorListener) {
-//        RequestQueue requestQueue = Volley.newRequestQueue(this);
-//
-//        try {
-//            JSONObject params = new JSONObject();
-//            params.put("status", status);
-//            params.put("id", password);
-//            RequestQueue req = new RequestQueue(
-//                    Request.Method.POST,
-//                    url,
-//                    params.toString(),
-//                    listener,
-//                    errorListener
-//            );
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return req;
-//    }
-
-    //URL of the request we are sending
-//    String url = "api.openweathermap.org/data/2.5/weather?q=London";
-
-    /*
-     * JsonObjectRequest takes in five paramaters
-     * Request Type - This specifies the type of the request eg: GET,POST
-     * URL          - This String param specifies the Request URL
-     * JSONObject   - This parameter takes in the POST parameters."null" in
-     *                  case of GET request.
-     * Listener     -This parameter takes in a implementation of Response.Listener()
-     *                 interface which is invoked if the request is successful
-     * Listener     -This parameter takes in a implementation of Error.Listener()
-     *               interface which is invoked if any error is encountered while processing
-     *               the request
-     */
-//    JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-//            url, null,
-//            new Response.Listener() {
-//                @Override
-//                public void onResponse(JSONObject response) {
-//
-//                    //Success Callback
-//                }
-//            },
-//            new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//
-//                    //Failure Callback
-//                }
-//            })
-//
-//    {
-//
-//        /** Passing some request headers* */
-//        @Override
-//        public Map getHeaders() throws AuthFailureError {
-//            HashMap headers = new HashMap();
-//            headers.put("Content-Type", "application/json");
-//            headers.put("apiKey", "xxxxxxxxxxxxxxx");
-//            return headers;
-//        }
-//    };
-//
-//    // Adding the request to the queue along with a unique string tag
-//    MyApplication.getInstance().addToRequestQueue(jsonObjectReq,"headerRequest");
-
 }

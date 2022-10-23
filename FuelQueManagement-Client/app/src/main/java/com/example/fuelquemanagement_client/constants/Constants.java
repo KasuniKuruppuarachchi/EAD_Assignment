@@ -9,6 +9,9 @@ public class Constants {
     public static final String JOINED_TIME = "JOINED_TIME";
     public static final String LOGGED_USER = "LOGGED_USER";
     public static final String JOINED_QUEUE = "JOINED_QUEUE";
+
+    public static final String UPDATE_SUCCESS = "Successfully Updated";
+    public static final String ERROR = "Something went wrong";
     public static final String WAITING_TIME = "WAITING_TIME";
     public static final String TOTAL_PETROL_COUNT = "TOTAL_PETROL_COUNT";
     public static final String TOTAL_DIESEL_COUNT = "TOTAL_DIESEL_COUNT";
