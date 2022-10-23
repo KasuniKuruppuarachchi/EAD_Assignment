@@ -35,11 +35,10 @@ import java.util.Date;
  * whether exit before or after pump fuel
  */
 public class ExitQueue extends AppCompatActivity implements View.OnClickListener {
-
     private Button btnExitAfter, btnExitBefore;
     private FuelStation fuelStation;
-    private TextView txtJoinedTime;
-    private String joinedTime;
+    private TextView txtJoinedTime, txtFuelType, txtVehicleType;
+    private String joinedTime, fuelType, vehicleType;
     private Queue joinedQueue;
     private User loggedUser;
 
@@ -54,6 +53,13 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
         fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
         joinedQueue = (Queue) getIntent().getSerializableExtra(Constants.JOINED_QUEUE);
         loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
+        fuelType = joinedQueue.fuelType;
+        vehicleType = joinedQueue.vehicleType;
+        txtFuelType = findViewById(R.id.txt_fueltype);
+        txtVehicleType = findViewById(R.id.txt_vehicleType);
+
+        txtFuelType.setText("Fuel Type: " + fuelType);
+        txtVehicleType.setText("Vehicle Type: " + vehicleType);
 
         btnExitAfter = findViewById(R.id.btn_exitAfter);
         btnExitAfter.setOnClickListener(this);

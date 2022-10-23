@@ -1,8 +1,10 @@
 package com.example.fuelquemanagement_client.station_owner;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -27,6 +30,8 @@ import com.example.fuelquemanagement_client.MainActivity;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.FuelStation;
+import com.example.fuelquemanagement_client.vehicle_owner.JoinQueue;
+import com.example.fuelquemanagement_client.vehicle_owner.VehicleOwnerDashboard;
 
 /**
  * The StationOwnerDashboard class facilitates the Station Owner see a dashboard view for the Fuel Station including fuel status
@@ -49,8 +54,6 @@ public class StationOwnerDashboard extends AppCompatActivity {
         setContentView(R.layout.activity_station_owner_dashboard);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Station Owner Dashboard");
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
         stationID = fuelStation.getId();
@@ -87,8 +90,9 @@ public class StationOwnerDashboard extends AppCompatActivity {
         radioGroupPetrol.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                String URL_petrol ;
+                String URL_petrol, status;
                 rbPetrol = findViewById(i);
+                status = rbPetrol.getText().toString();
 
                 String URL_to_send;
                 System.out.println("Radio Result " + rbPetrol.getText().toString());
@@ -103,32 +107,7 @@ public class StationOwnerDashboard extends AppCompatActivity {
 
                 URL_to_send = URL_petrol.concat(stationID);
 
-                StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL_to_send, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_VOLLEY", response);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("LOG_VOLLEY", error.toString());
-                    }
-                }){
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        String responseString = "";
-                        if (response != null) {
-                            responseString = String.valueOf(response.statusCode);
-                        }
-                        return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                    }
-                };
-                requestQueue.add(stringRequest);
+                showAlertDialog(URL_to_send, Constants.PETROL, status);
             }
         });
 
@@ -139,7 +118,8 @@ public class StationOwnerDashboard extends AppCompatActivity {
                 String URL_diesel;
                 rbDiesel = findViewById(i);
 
-                String URL_to_send;
+                String URL_to_send, status;
+                status = rbDiesel.getText().toString();
                 System.out.println("Radio Result " + rbDiesel.getText().toString());
 
                 if(rbDiesel.getText().toString().equals("Available")) {
@@ -152,37 +132,11 @@ public class StationOwnerDashboard extends AppCompatActivity {
 
                 URL_to_send = URL_diesel.concat(stationID);
 
-                System.out.println("Send this " + URL_to_send);
-                StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL_to_send, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.i("LOG_VOLLEY", response);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("LOG_VOLLEY", error.toString());
-                    }
-                }){
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json; charset=utf-8";
-                    }
-
-                    @Override
-                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        String responseString = "";
-                        if (response != null) {
-                            responseString = String.valueOf(response.statusCode);
-                        }
-                        return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-                    }
-                };
-                requestQueue.add(stringRequest);
+                showAlertDialog(URL_to_send, Constants.DIESEL, status);
             }
         });
 
-        // Update Fuel station button navigation
+        // Update Fuel arrival form button navigation
         btn_update_fuel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -203,5 +157,68 @@ public class StationOwnerDashboard extends AppCompatActivity {
             startActivity(intent);
         }
         return true;
+    }
+
+    // Function to handle the radio select of fuel availability with alert dialog
+    private void showAlertDialog(String URL_to_send, String fuelType, String status) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(StationOwnerDashboard.this);
+        alertDialog.setTitle("Alert!");
+        alertDialog.setMessage(
+                        "" +
+                                "Are you sure to change "+ fuelType +
+                                " status into " + status + "?"
+                )
+                .setCancelable(true)
+                // Cancel button action
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(StationOwnerDashboard.this, "Nothing changed", Toast.LENGTH_SHORT).show();
+                        dialogInterface.dismiss();
+                        finish();
+                        startActivity(getIntent());
+                    }
+                })
+                // Submit button action
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        System.out.println("Send this " + URL_to_send);
+                        StringRequest stringRequest = new StringRequest(Request.Method.PUT, URL_to_send, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Log.i("LOG_VOLLEY", response);
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("LOG_VOLLEY", error.toString());
+                            }
+                        }){
+                            @Override
+                            public String getBodyContentType() {
+                                return "application/json; charset=utf-8";
+                            }
+
+                            @Override
+                            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                                String responseString = "";
+                                if (response != null) {
+                                    responseString = String.valueOf(response.statusCode);
+                                }
+                                return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
+                            }
+                        };
+                        // sending the POST Request
+                        requestQueue.add(stringRequest);
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+        ;
+        AlertDialog alert = alertDialog.create();
+
+        alert.show();
     }
 }

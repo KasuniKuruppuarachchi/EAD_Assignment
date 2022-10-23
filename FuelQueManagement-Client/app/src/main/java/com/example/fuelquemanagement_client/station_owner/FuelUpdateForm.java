@@ -227,6 +227,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
         // Back button navigation
         if(id == android.R.id.home){
             Intent intent = new Intent(FuelUpdateForm.this, StationOwnerDashboard.class);
+            intent.putExtra(Constants.STATION, fuelStation);
             startActivity(intent);
         }
         return true;

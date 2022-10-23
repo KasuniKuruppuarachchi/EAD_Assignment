@@ -30,6 +30,6 @@ public class Constants {
     public static final String THREE_WHEEL = "Three Wheel";
 
     //Base URL for API Calls
-    public static final String BASE_URL = "http://192.168.8.118:5000";
+    public static final String BASE_URL = "http://192.168.25.70:5000";
 
 }
