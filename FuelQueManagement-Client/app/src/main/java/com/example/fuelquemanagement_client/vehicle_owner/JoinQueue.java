@@ -330,7 +330,7 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
                         startActivity(intent);
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.warning)
         ;
         AlertDialog alert = alertDialog.create();
 

@@ -44,7 +44,7 @@ public class StationOwnerDashboard extends AppCompatActivity {
     private String stationID;
     private boolean status_petrol, status_diesel;
     private FuelStation fuelStation;
-    private TextView textView;
+    private TextView textView, petrol, diesel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,7 @@ public class StationOwnerDashboard extends AppCompatActivity {
 
         fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
         stationID = fuelStation.getId();
+
         btn_update_fuel = findViewById(R.id.btn_update_fuel);
         radioGroupPetrol = findViewById(R.id.rad_group_petrol);
         radioGroupDiesel = findViewById(R.id.rad_group_diesel);
@@ -65,6 +66,13 @@ public class StationOwnerDashboard extends AppCompatActivity {
         rbPetrolFinish = findViewById(R.id.rad_petrol_finish);
         rbPetrolAvailable = findViewById(R.id.rad_petrol_available);
         textView = findViewById(R.id.txt_station_name);
+        petrol = findViewById(R.id.txt_current_petrol);
+        diesel = findViewById(R.id.txt_current_diesel);
+
+        // Setting the currently available petrol and diesel amounts
+        petrol.setText(" Available Petrol Amount: " + fuelStation.getTotalPetrol() + " Liters");
+        System.out.println("PETROLLLL"+fuelStation.getTotalPetrol());
+        diesel.setText(" Available Diesel Amount: " + fuelStation.getTotalDiesel() + "Liters");
 
         // Setting station name and location on the interface
         textView.setText(fuelStation.getStationName() + " - " + fuelStation.getLocation());
@@ -215,7 +223,7 @@ public class StationOwnerDashboard extends AppCompatActivity {
                         requestQueue.add(stringRequest);
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setIcon(R.drawable.warning)
         ;
         AlertDialog alert = alertDialog.create();
 
