@@ -38,7 +38,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="8dp"
             android:elevation="8dp"
-            app:cardBackgroundColor="@color/btn_color1">
+            app:cardBackgroundColor="@color/cancel_button">
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableRight="@android:drawable/ic_menu_search"
-        android:hint="Search Fuel Station" />
+        android:paddingLeft="10dp"
+        android:hint="Search Fuel Station by location" />
 
     <ListView
         android:id="@+id/idStationView"
