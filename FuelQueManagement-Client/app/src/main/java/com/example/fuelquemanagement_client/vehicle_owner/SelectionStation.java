@@ -7,8 +7,11 @@ import org.json.JSONException;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ListView;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -29,6 +32,7 @@ public class SelectionStation extends AppCompatActivity {
 
     private User loggedUser;
     private ListView stationView;
+    private EditText edSearchStation;
     private ArrayList<FuelStation> stations;
     String api = Constants.BASE_URL+"/FuelStation";
 
@@ -41,6 +45,9 @@ public class SelectionStation extends AppCompatActivity {
 
         stationView = (ListView)findViewById(R.id.idStationView);
         stations = new ArrayList<FuelStation>();
+
+        edSearchStation = (EditText)findViewById(R.id.edtTxt_searchStation);
+
         loadStations();
     }
 
@@ -78,6 +85,25 @@ public class SelectionStation extends AppCompatActivity {
                             loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
                             StationAdapter adapter = new StationAdapter(SelectionStation.this , R.layout.single_station, stations,loggedUser);
                             stationView.setAdapter(adapter);
+
+                            edSearchStation.addTextChangedListener(new TextWatcher() {
+                                @Override
+                                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                                    adapter.getFilter().filter(s);
+                                }
+
+                                @Override
+                                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                }
+
+                                @Override
+                                public void afterTextChanged(Editable s) {
+
+                                }
+                            });
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
