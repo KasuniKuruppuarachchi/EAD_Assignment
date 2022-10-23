@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Queue implements Serializable {
 
-    public String id, vehicleType, vehicleOwner, fuelType, stationsId;
+    public String id, vehicleType, vehicleOwner, fuelType, stationsId, arrivalTime, departTime;
 
     public Queue() {
     }
@@ -15,6 +15,16 @@ public class Queue implements Serializable {
         this.vehicleOwner = vehicleOwner;
         this.fuelType = fuelType;
         this.stationsId = stationsId;
+    }
+
+    public Queue(String id, String vehicleType, String vehicleOwner, String fuelType, String stationsId, String arrivalTime, String departTime) {
+        this.id = id;
+        this.vehicleType = vehicleType;
+        this.vehicleOwner = vehicleOwner;
+        this.fuelType = fuelType;
+        this.stationsId = stationsId;
+        this.arrivalTime = arrivalTime;
+        this.departTime = departTime;
     }
 
     public String getId() {
@@ -55,5 +65,21 @@ public class Queue implements Serializable {
 
     public void setStationsId(String stationsId) {
         this.stationsId = stationsId;
+    }
+
+    public String getArrivalTime() {
+        return arrivalTime;
+    }
+
+    public void setArrivalTime(String arrivalTime) {
+        this.arrivalTime = arrivalTime;
+    }
+
+    public String getDepartTime() {
+        return departTime;
+    }
+
+    public void setDepartTime(String departTime) {
+        this.departTime = departTime;
     }
 }

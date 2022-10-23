@@ -13,13 +13,13 @@
     <string name="Username">Username</string>
     <string name="Password">Password</string>
     <string name="ConfirmPassword">Confirm Password</string>
-    <string name="Register">Register</string>
+    <string name="Register">Sign Up</string>
     <string name="SignUp">Sign Up</string>
     <string name="Login">Login</string>
     <string name="Location">Location</string>
     <string name="StationName">Station Name</string>
-    <string name="LogIn">Log In</string>
-    <string name="RegistrationLink">New User? Tap here to Register</string>
+    <string name="LogIn">Sign In</string>
+    <string name="RegistrationLink">New User? Tap here to Sign Up</string>
     <string name="JoinQueue">Join Queue</string>
     <string name="VehicleType">Vehicle Type</string>
     <string name="FuelType">Fuel Type</string>
@@ -32,6 +32,7 @@
         <item>Bus</item>
         <item>Van</item>
         <item>Motor Bike</item>
+        <item>Three Wheel</item>
     </string-array>
 
     <string-array name="fuel_array">
@@ -52,6 +53,10 @@
     <string name="finish">Finish</string>
     <string name="fuel_type">Fuel Type</string>
     <string name="btn_fuel_arrival">Update Fuel Arrival</string>
+    <string name="type">Type</string>
+    <string name="current_status">Current Fuel Status</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="queue_enter">Entrance Form</string>
     <string-array name="fuel_types">
         <item>Petrol</item>
         <item>Diesel</item>

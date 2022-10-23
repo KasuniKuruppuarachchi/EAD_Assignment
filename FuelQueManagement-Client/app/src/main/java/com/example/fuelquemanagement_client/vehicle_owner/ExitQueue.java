@@ -59,8 +59,6 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
 
         txtJoinedTime = findViewById(R.id.txt_joinedTime);
         txtJoinedTime.setText("You have joined to the queue at " + joinedTime);
-
-
     }
 
     @Override
@@ -80,22 +78,28 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_exitAfter:
-                exitQueueApi();
-                Toast.makeText(this, "Clicked Exit After", Toast.LENGTH_SHORT).show();
+                exitQueueApi(true);
+                Toast.makeText(this, "You have Exited from the Queue After the pump fuel", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_exitBefore:
-                Toast.makeText(this, "Clicked Exit Before", Toast.LENGTH_SHORT).show();
+                exitQueueApi(false);
+                Toast.makeText(this, "You have Exited from the Queue Before the pump fuel", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
         }
+
+        Intent i = new Intent(ExitQueue.this, VehicleOwnerDashboard.class);
+        i.putExtra(Constants.STATION, fuelStation);
+        i.putExtra(Constants.LOGGED_USER, loggedUser);
+        startActivity(i);
     }
 
-
-    private void exitQueueApi() {
+    //When user clicks on exitFromQueue button, this updates the relevant fuel station with removed queue details
+    private void exitQueueApi(Boolean aquired) {
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = Constants.BASE_URL+"/Queue?fuelType="+joinedQueue.getFuelType()+"&stationId="+joinedQueue.stationsId+"&vehicleOwner="+joinedQueue.getVehicleOwner();
+        String url = Constants.BASE_URL+"/Queue?fuelType="+joinedQueue.getFuelType()+"&stationId="+joinedQueue.stationsId+"&queueId="+joinedQueue.getId()+"&aquired="+aquired;
 
         // Request a string response from the provided URL.
         StringRequest stringRequest =  new StringRequest(Request.Method.DELETE, url,
@@ -117,8 +121,5 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-
-
-
 
 }

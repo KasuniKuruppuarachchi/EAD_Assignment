@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_color"
     tools:context=".vehicle_owner.SelectionStation">
 
     <ListView
         android:id="@+id/idStationView"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_width="393dp"
+        android:layout_height="658dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
