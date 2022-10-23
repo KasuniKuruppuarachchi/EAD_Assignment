@@ -53,14 +53,13 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
 
     private FuelStation selectedFuelStation = new FuelStation();
     private Spinner dropdownVehicleType, dropdownFuelType;
+    private String timeDuration = "0";
     private TextView txtTimeDuration;
     private FuelStation fuelStation;
     private Button btnConfirmJoin;
-    private String timeDuration = "0";
     private User loggedUser;
     private String fuelType;
     private String vehicle;
-    private Queue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +68,12 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Join Queue Process");
 
+        //Get the values of intents that is passed from the previous activity
         loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
         fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
         fuelStation = (FuelStation) getIntent().getSerializableExtra(Constants.STATION);
         timeDuration = getIntent().getStringExtra(Constants.WAITING_TIME);
-        //getFuelStationById(fuelStation.getId());
+
         dropdownVehicleType = (Spinner) findViewById(R.id.drpdwn_vehicleType);
         ArrayAdapter<CharSequence> adapterVehicleType = ArrayAdapter.createFromResource(this,
                 R.array.vehicles_array, android.R.layout.simple_spinner_item);
@@ -111,7 +111,8 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
         btnConfirmJoin = findViewById(R.id.btn_confirmJoin);
         btnConfirmJoin.setOnClickListener(this);
 
-       // txtTimeDuration.setText("People are waiting from "+timeDuration);
+        txtTimeDuration = findViewById(R.id.txt_timeDurationJoin);
+        txtTimeDuration.setText("People are waiting from " + timeDuration);
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
@@ -124,17 +125,7 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_confirmJoin:
-               // queue = new Queue("", vehicle, String.valueOf(loggedUser.getId()), fuelType, fuelStation.getId());
                 getFuelStationById(fuelStation.getId(),fuelType);
-           //     addQueueAPI(vehicle, String.valueOf(loggedUser.getId()), fuelStation.getId(), fuelType);
-//                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//                Date date = new Date();
-//                Intent i = new Intent(JoinQueue.this, ExitQueue.class);
-//                i.putExtra(Constants.JOINED_TIME, dateFormat.format(date).toString());
-//                i.putExtra(Constants.STATION, fuelStation);
-//               // i.putExtra(Constants.JOINED_QUEUE, queue);
-//                i.putExtra(Constants.LOGGED_USER, loggedUser);
-//                startActivity(i);
                 break;
             default:
                 break;
@@ -282,28 +273,21 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
     private void getFuelStationById(String id, String fuelType) {
 
         JSONObject jsonObject = new JSONObject();
-        RequestQueue mRequestQueue = Volley.newRequestQueue(this);
-        String URL = Constants.BASE_URL + "/FuelStation/"+id;
         ArrayList<Queue> joinedQueues = new ArrayList<>();
-        final JsonArrayRequest[] jsonObjReqArray = new JsonArrayRequest[1];
+        String URL = Constants.BASE_URL + "/FuelStation/"+id;
+        RequestQueue mRequestQueue = Volley.newRequestQueue(this);
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 URL, jsonObject,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println("Inside new Api 123" + response);
                         try {
 
-                            System.out.println(response);
-                            System.out.println("StationIdNewLoaded" + response.getString("id"));
                             JSONArray queueArray = new JSONArray(response.getString("queue"));
-
-                            System.out.println("Joined Queues : "+ queueArray);
 
                             for(int i=0;i<queueArray.length();i++){
                                 JSONObject singleObject = queueArray.getJSONObject(i);
-                                Log.e("api", "onResponse: "+   singleObject.getString("id"));
                                 Queue queue = new Queue(
                                         singleObject.getString("id"),
                                         singleObject.getString("vehicleType"),
@@ -312,7 +296,6 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
                                         singleObject.getString("stationsId")
                                 );
                                 joinedQueues.add(queue);
-                                Log.e("api", "onResponse: "+   joinedQueues.size());
                             }
                             selectedFuelStation.setId(response.getString("id"));
                             selectedFuelStation.setStationName( response.getString("name"));
@@ -322,7 +305,11 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
                             selectedFuelStation.setDieselStatus(response.getBoolean("dieselStatus"));
                             selectedFuelStation.setPetrolStatus(response.getBoolean("petrolStatus"));
                             selectedFuelStation.setQueues(joinedQueues);
+
+                            //Get the vehicle counts of each queue according ot the fuel type in the selected station
                             Map<String,Integer> vehicleCounts = vehicleDashboardController.getVehicleCounts(joinedQueues);
+
+                            //Get the total number of vehicles that can be in each queue of the selected station
                             getFuelStationCountById(id, vehicleCounts);
 
                         } catch (JSONException e) {
@@ -336,7 +323,6 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
             }
         });
         mRequestQueue.add(jsonObjReq);
-        // mRequestQueue.add(jsonObjReqArray[0]);
     }
 
     private void getFuelStationCountById(String id, Map<String,Integer> vehicleCounts) {
@@ -344,7 +330,6 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
         JSONArray jsonArray = new JSONArray();
         RequestQueue mRequestQueue = Volley.newRequestQueue(this);
         String URL = Constants.BASE_URL + "/Queue/GetQueueLength?stationId="+id;
-        //ArrayList<Queue> joinedQueues = new ArrayList<>();
 
         JsonArrayRequest jsonObjReq = new JsonArrayRequest(Request.Method.GET,
                 URL, jsonArray,
@@ -352,8 +337,6 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
                     @Override
                     public void onResponse(JSONArray response) {
                         try {
-                            System.out.println("Arrayyyy Kasuni: " + response.get(1).toString());
-                            System.out.println("Arrayyyy Kasuni: " + vehicleCounts.get(Constants.TOTAL_PETROL_COUNT));
 
                             if (fuelType.equals(Constants.DIESEL) && vehicleCounts.get(Constants.TOTAL_DIESEL_COUNT) >= Integer.valueOf(response.get(1).toString())) {
                                 showAlertDialog(Constants.DIESEL);
@@ -371,8 +354,6 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        System.out.println(vehicleCounts.get(Constants.TOTAL_DIESEL_COUNT));
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -393,9 +374,22 @@ public class JoinQueue extends AppCompatActivity implements AdapterView.OnItemSe
                         "You can not entered to the "+fuelType+"\n " +
                         "Queue, Because queue is full or " + fuelType+
                         " is finished"
-        );
+        )
+                .setCancelable(false)
+                // Set the action buttons
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(JoinQueue.this, VehicleOwnerDashboard.class);
+                        intent.putExtra(Constants.STATION, fuelStation);
+                        intent.putExtra(Constants.LOGGED_USER, loggedUser);
+                        startActivity(intent);
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+        ;
         AlertDialog alert = alertDialog.create();
-        alert.setCanceledOnTouchOutside(false);
+
         alert.show();
     }
 }

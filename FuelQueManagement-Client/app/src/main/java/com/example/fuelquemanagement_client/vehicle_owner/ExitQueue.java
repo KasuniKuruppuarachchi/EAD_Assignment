@@ -59,8 +59,6 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
 
         txtJoinedTime = findViewById(R.id.txt_joinedTime);
         txtJoinedTime.setText("You have joined to the queue at " + joinedTime);
-
-
     }
 
     @Override
@@ -81,15 +79,20 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
         switch (view.getId()) {
             case R.id.btn_exitAfter:
                 exitQueueApi(true);
-                Toast.makeText(this, "Clicked Exit After", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You have Exited from the Queue After the pump fuel", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.btn_exitBefore:
                 exitQueueApi(false);
-                Toast.makeText(this, "Clicked Exit Before", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "You have Exited from the Queue Before the pump fuel", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
         }
+
+        Intent i = new Intent(ExitQueue.this, VehicleOwnerDashboard.class);
+        i.putExtra(Constants.STATION, fuelStation);
+        i.putExtra(Constants.LOGGED_USER, loggedUser);
+        startActivity(i);
     }
 
     //When user clicks on exitFromQueue button, this updates the relevant fuel station with removed queue details
@@ -118,8 +121,5 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-
-
-
 
 }
