@@ -18,9 +18,9 @@ public class FuelStationModel
     public int TotalPetrol { get; set; }
     public int TotalDiesel { get; set; }
     public QueueModel[]? QueueHistory { get; set; }
-    public DateTime? LastModified { get; set; }
+    public string? LastModified { get; set; }
 
-    public FuelStationModel(string name, string location, FuelModel[]? fuel, QueueModel[]? queue, string stationOwner, DateTime? lastModified)
+    public FuelStationModel(string name, string location, FuelModel[]? fuel, QueueModel[]? queue, string stationOwner, string? lastModified)
     {
         Name = name;
         Location = location;

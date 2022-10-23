@@ -30,7 +30,7 @@ namespace FuelQueManagement_Service.Services
             fuelModel.Amount = request.Amount;
             fuelModel.Date = request.Date;
             fuelModel.Time = request.Time;
-            fuelModel.LastModified = DateTime.Now;
+            fuelModel.LastModified = DateTime.Now.ToString();
             fuelModel.StationsId = request.StationsId ?? null;
 
             var firstStationFilter = Builders<FuelStationModel>.Filter.Eq(a => a.Id, request.StationsId);
