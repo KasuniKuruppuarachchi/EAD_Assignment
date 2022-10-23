@@ -13,9 +13,9 @@ namespace FuelQueManagement_Service.Models
         public string Date { get; set; }
         public string Time { get; set; }
         public string? StationsId { get; set; }
-        public DateTime? LastModified { get; set; }
+        public string? LastModified { get; set; }
 
-        public FuelModel(string type, int amount, DateTime? lastModified)
+        public FuelModel(string type, int amount, string? lastModified)
         {
             Type = type;
             Amount = amount;

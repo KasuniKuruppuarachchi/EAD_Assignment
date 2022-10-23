@@ -2,54 +2,31 @@ package com.example.fuelquemanagement_client;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
+import android.content.Intent;
+import org.json.JSONObject;
+import org.json.JSONException;
 import android.view.View;
+import android.view.MenuItem;
+import android.widget.Toast;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.database.DatabaseHelper;
 import com.example.fuelquemanagement_client.database.InputValidatorHelper;
-import com.example.fuelquemanagement_client.models.Fuel;
-import com.example.fuelquemanagement_client.models.FuelStation;
-import com.example.fuelquemanagement_client.models.StationOwner;
 import com.example.fuelquemanagement_client.models.User;
-import com.example.fuelquemanagement_client.models.VehicleOwner;
-import com.example.fuelquemanagement_client.vehicle_owner.VehicleOwnerDashboard;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Registration extends AppCompatActivity implements View.OnClickListener {
 
     private EditText edFullName, edUserName, edPassword, edConfirmPassword, edLocation, edStationName;
     final String[] stationId = new String[1];
     private DatabaseHelper databaseHelper;
-    private VehicleOwner vehicleOwner;
-    private StationOwner stationOwner;
     private Button btnRegister;
     private String role;
     private User user;
@@ -66,7 +43,6 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                 } else {
                     if (allowSave) {
                         postDataUsingVolleyObject(edStationName.getText().toString(), edLocation.getText().toString(), "");
-                        // user = addStationUser();
                     }
                 }
                 break;
@@ -106,7 +82,7 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         databaseHelper = new DatabaseHelper(this);
     }
 
-    //This function executes when user clicks the Add button in the view
+    //When user clicks on register button, check for the validations in input fields
     public boolean checkValidations(String role) {
 
         InputValidatorHelper inputTaskValidatorHelper = new InputValidatorHelper();
@@ -149,6 +125,9 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         return allowSave;
     }
 
+    /*If user registered as a vehicle Owner this function executes
+    and register the user to the system while keeping login credentials in sqllite database
+     */
     public User addVehicleUser() {
         user = new User(-1, edFullName.getText().toString(), edUserName.getText().toString(), "", "", edPassword.getText().toString(), "", Constants.VEHICLE);
         boolean success = databaseHelper.addUserRecord(user);
@@ -162,14 +141,13 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
         return user;
     }
 
+    /*If user registered as a station Owner this function executes
+        and register the user to the system while keeping login credentials in sqllite database
+    */
     public User addStationUser(String stationId) {
 
-        //postDataUsingVolleyObject( edStationName.getText().toString(), edLocation.getText().toString(), "");
         user = new User(-1, edFullName.getText().toString(), edUserName.getText().toString(), edLocation.getText().toString(), edStationName.getText().toString(), edPassword.getText().toString(), stationId, Constants.STATION);
         boolean success = databaseHelper.addUserRecord(user);
-
-        // calling a method to post the data and passing our name and job.
-        // postDataUsingVolley(edStationName.getText().toString(), edLocation.getText().toString());
         if (success) {
             String id = databaseHelper.getLastStationOwnerId();
             System.out.println("Last Owner Id:" + id);
@@ -187,113 +165,24 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
-
         //If user clicks on the back button
         if (id == android.R.id.home) {
             Intent intent = new Intent(Registration.this, LoginScreen.class);
             startActivity(intent);
         }
-//        //If user clicks on the cross button in the top right corner of AddTask interface
-//        if(id == R.id.cancel){
-//
-//            finish();
-//            startActivity(getIntent());
-//
-//        }
         return true;
     }
 
-
-//    private void postDataUsingVolley(String stationName, String locationName, String stationOwnerId){
-//        try {
-//            RequestQueue requestQueue = Volley.newRequestQueue(this);
-//
-//            String[] arr = new String[0];
-//
-//            System.out.println("stationName"+ stationName);
-//            System.out.println("locationName"+ locationName);
-//            System.out.println("stationOwnerId"+ stationOwnerId);
-//            String URL = "http://192.168.8.118:5000/FuelStation";
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("id", null);
-//            jsonObject.put("name", stationName);
-//            jsonObject.put("location", locationName);
-//            //jsonObject.put("fuel", new Fuel[0]);
-//            //jsonObject.put("queue", new Fuel[0]);
-//            jsonObject.put("stationOwner", stationOwnerId);
-//            jsonObject.put("dieselStatus", false);
-//            jsonObject.put("petrolStatus", false);
-//            jsonObject.put("lastModified", null);
-//            final String mRequestBody = jsonObject.toString();
-//
-//            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-//                @Override
-//                public void onResponse(String response) {
-//                    Log.i("LOG_VOLLEY", response);
-//                    try {
-//                        System.out.println("Inside"+   response);
-//                        JSONObject singleObject = new JSONObject(response);
-//                        System.out.println("Inside" +   singleObject);
-//                        System.out.println("Inside" +   singleObject.getString("name"));
-//                    }catch (JSONException e){
-//
-//                    }
-//                }
-//            }, new Response.ErrorListener() {
-//                @Override
-//                public void onErrorResponse(VolleyError error) {
-//                    Log.e("LOG_VOLLEY", error.toString());
-//                }
-//            }) {
-//                @Override
-//                public String getBodyContentType() {
-//                    return "application/json; charset=utf-8";
-//                }
-//
-//                @Override
-//                public byte[] getBody() throws AuthFailureError {
-//                    try {
-//                        return mRequestBody == null ? null : mRequestBody.getBytes("utf-8");
-//                    } catch (UnsupportedEncodingException uee) {
-//                        VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody, "utf-8");
-//                        return null;
-//                    }
-//                }
-//
-//                @Override
-//                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-//                    String responseString = "";
-//                    if (response != null) {
-//
-//                        responseString = String.valueOf(response.statusCode);
-//
-//                    }
-//                    return Response.success(responseString, HttpHeaderParser.parseCacheHeaders(response));
-//                }
-//            };
-//
-//            requestQueue.add(stringRequest);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-//
-
-
+    //Add station to the remote database through api call along with registered station owner details
     private void postDataUsingVolleyObject(String stationName, String locationName, String stationOwnerId) {
         JSONObject jsonObject = new JSONObject();
         RequestQueue mRequestQueue = Volley.newRequestQueue(this);
         String URL = Constants.BASE_URL + "/FuelStation";
 
         try {
-            // user_id, comment_id,status
-
             jsonObject.put("id", null);
             jsonObject.put("name", stationName);
             jsonObject.put("location", locationName);
-            //jsonObject.put("fuel", new Fuel[0]);
-            //jsonObject.put("queue", new Fuel[0]);
             jsonObject.put("stationOwner", stationOwnerId);
             jsonObject.put("dieselStatus", false);
             jsonObject.put("petrolStatus", false);
@@ -312,12 +201,9 @@ public class Registration extends AppCompatActivity implements View.OnClickListe
                             System.out.println("StationIdNew" + response.getString("id"));
                             stationId[0] = response.getString("id");
                             addStationUser(stationId[0]);
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                        //  YOUR RESPONSE
                     }
                 }, new Response.ErrorListener() {
             @Override

@@ -9,6 +9,8 @@ public class FuelStation implements Serializable {
     private String id;
     private String stationName, location, stationOwner, lastModified;
     private boolean dieselStatus, petrolStatus;
+    private ArrayList<Queue> queues;
+    private int totalDiesel, totalPetrol;
 
     public FuelStation() {
     }
@@ -27,6 +29,29 @@ public class FuelStation implements Serializable {
         this.lastModified = lastModified;
         this.dieselStatus = dieselStatus;
         this.petrolStatus = petrolStatus;
+    }
+
+    public FuelStation(String id, String stationName, String location, String stationOwner, String lastModified, boolean dieselStatus, boolean petrolStatus, ArrayList<Queue> queues) {
+        this.id = id;
+        this.stationName = stationName;
+        this.location = location;
+        this.stationOwner = stationOwner;
+        this.lastModified = lastModified;
+        this.dieselStatus = dieselStatus;
+        this.petrolStatus = petrolStatus;
+        this.queues = queues;
+    }
+
+    public FuelStation(String id, String stationName, String location, String stationOwner, String lastModified, boolean dieselStatus, boolean petrolStatus, int totalDiesel, int totalPetrol) {
+        this.id = id;
+        this.stationName = stationName;
+        this.location = location;
+        this.stationOwner = stationOwner;
+        this.lastModified = lastModified;
+        this.dieselStatus = dieselStatus;
+        this.petrolStatus = petrolStatus;
+        this.totalDiesel = totalDiesel;
+        this.totalPetrol = totalPetrol;
     }
 
     public String getId() {
@@ -93,5 +118,29 @@ public class FuelStation implements Serializable {
 
     public void setPetrolStatus(boolean petrolStatus) {
         this.petrolStatus = petrolStatus;
+    }
+
+    public ArrayList<Queue> getQueues() {
+        return queues;
+    }
+
+    public void setQueues(ArrayList<Queue> queues) {
+        this.queues = queues;
+    }
+
+    public int getTotalDiesel() {
+        return totalDiesel;
+    }
+
+    public void setTotalDiesel(int totalDiesel) {
+        this.totalDiesel = totalDiesel;
+    }
+
+    public int getTotalPetrol() {
+        return totalPetrol;
+    }
+
+    public void setTotalPetrol(int totalPetrol) {
+        this.totalPetrol = totalPetrol;
     }
 }

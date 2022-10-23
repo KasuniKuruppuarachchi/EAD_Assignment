@@ -1,8 +1,11 @@
 package com.example.fuelquemanagement_client;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import org.json.JSONException;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,19 +25,9 @@ import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.database.DatabaseHelper;
 import com.example.fuelquemanagement_client.database.InputValidatorHelper;
 import com.example.fuelquemanagement_client.models.FuelStation;
-import com.example.fuelquemanagement_client.models.StationOwner;
 import com.example.fuelquemanagement_client.models.User;
-import com.example.fuelquemanagement_client.models.VehicleOwner;
 import com.example.fuelquemanagement_client.station_owner.StationOwnerDashboard;
 import com.example.fuelquemanagement_client.vehicle_owner.SelectionStation;
-import com.example.fuelquemanagement_client.vehicle_owner.StationAdapter;
-import com.example.fuelquemanagement_client.vehicle_owner.VehicleOwnerDashboard;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 public class LoginScreen extends AppCompatActivity implements View.OnClickListener {
 
@@ -67,7 +59,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                         } else {
                             System.out.println("Station Id " + user.getStationId());
                             findFuelStation(user.getStationId());
-
                         }
                     }
                 }
@@ -75,7 +66,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
             default:
                 break;
         }
-
     }
 
     @Override
@@ -96,8 +86,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         txtRegisterLink.setOnClickListener(this);
 
         databaseHelper = new DatabaseHelper(this);
-
-
     }
 
     private void showAlertDialog() {
@@ -129,26 +117,23 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         alert.show();
     }
 
+    // Validate the input fields of the form in login
     public boolean checkValidations() {
-
         InputValidatorHelper inputTaskValidatorHelper = new InputValidatorHelper();
-
         //Validate and Save
         boolean allowSave = true;
-
         if (inputTaskValidatorHelper.isNullOrEmpty(edUserName.getText().toString())) {
             Toast.makeText(this, "Username Should not be Empty", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         if (inputTaskValidatorHelper.isNullOrEmpty(edPassword.getText().toString())) {
             Toast.makeText(this, "Password Should not be Empty", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         return allowSave;
     }
 
+    // find and retrieve the object of the fuel station which is owned by the logged station owner
     public void findFuelStation(String stationId) {
 
         ArrayList<FuelStation> stations = new ArrayList<>();
@@ -157,18 +142,13 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
         RequestQueue queue = Volley.newRequestQueue(this);
         String api = Constants.BASE_URL + "/FuelStation";
 
-
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, api,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        // textView.setText("Response is: " + response.substring(0,500));
-                        //     System.out.println("Response is: " + response.substring(0,500));
                         try {
                             JSONArray array = new JSONArray(response);
-                            int length = array.length();
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject singleObject = array.getJSONObject(i);
                                 Log.e("api", "onResponse: " + singleObject.getString("id"));
@@ -183,12 +163,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                                 );
                                 stations.add(fuelStation);
                                 Log.e("api", "onResponse: " + stations.size());
-
                                 for (FuelStation station : stations) {
                                     if (station.getId().equals(stationId)) {
                                         registeredFuelStation[0] = station;
-
-                                        System.out.println("Nameeeee :" + registeredFuelStation[0].getStationName());
                                         Intent intent = new Intent(LoginScreen.this, StationOwnerDashboard.class);
                                         intent.putExtra(Constants.STATION, registeredFuelStation[0]);
                                         startActivity(intent);
@@ -204,15 +181,10 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //textView.setText("That didn't work!");
-                        System.out.println("That didn't work!");
                         System.out.println("That didn't work! +" + error.getLocalizedMessage());
                     }
                 });
-
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
-
-
     }
 }
