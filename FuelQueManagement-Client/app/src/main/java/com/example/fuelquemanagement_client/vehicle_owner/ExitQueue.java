@@ -30,6 +30,10 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+/**
+ * The ExitQueue class facilitates the vehicle owner to exit from the entered queue in the selected station by indicating
+ * whether exit before or after pump fuel
+ */
 public class ExitQueue extends AppCompatActivity implements View.OnClickListener {
     private Button btnExitAfter, btnExitBefore;
     private FuelStation fuelStation;
