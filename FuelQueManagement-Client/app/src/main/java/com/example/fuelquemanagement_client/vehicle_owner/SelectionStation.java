@@ -71,7 +71,6 @@ public class SelectionStation extends AppCompatActivity {
                             int length = array.length();
                             for(int i=0;i<array.length();i++){
                                 JSONObject singleObject = array.getJSONObject(i);
-                                Log.e("api", "onResponse: "+   singleObject.getString("id"));
                                 FuelStation fuelStation = new FuelStation(
                                         singleObject.getString("id"),
                                         singleObject.getString("name"),
@@ -84,9 +83,7 @@ public class SelectionStation extends AppCompatActivity {
                                         singleObject.getInt("totalPetrol")
                                 );
                                 stations.add(fuelStation);
-                                Log.e("api", "onResponse: "+   stations.size());
                             }
-                            Log.e("api", "onResponse: "+stations.size());
                             loggedUser = (User) getIntent().getSerializableExtra(Constants.LOGGED_USER);
                             StationAdapter adapter = new StationAdapter(SelectionStation.this , R.layout.single_station, stations,loggedUser);
                             stationView.setAdapter(adapter);
