@@ -56,7 +56,7 @@ public class ExitQueue extends AppCompatActivity implements View.OnClickListener
         fuelType = joinedQueue.fuelType;
         vehicleType = joinedQueue.vehicleType;
         txtFuelType = findViewById(R.id.txt_fueltype);
-        txtVehicleType = findViewById(R.id.txt_vehicleType);
+        txtVehicleType = findViewById(R.id.txt_vehicletypeExit);
 
         txtFuelType.setText("Fuel Type: " + fuelType);
         txtVehicleType.setText("Vehicle Type: " + vehicleType);
