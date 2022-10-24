@@ -154,7 +154,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                             JSONArray array = new JSONArray(response);
                             for (int i = 0; i < array.length(); i++) {
                                 JSONObject singleObject = array.getJSONObject(i);
-                                Log.e("api", "onResponse: " + singleObject.getString("id"));
                                 FuelStation fuelStation = new FuelStation(
                                         singleObject.getString("id"),
                                         singleObject.getString("name"),
@@ -167,7 +166,6 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                                         singleObject.getInt("totalPetrol")
                                 );
                                 stations.add(fuelStation);
-                                Log.e("api", "onResponse: " + stations.size());
                                 for (FuelStation station : stations) {
                                     if (station.getId().equals(stationId)) {
                                         registeredFuelStation[0] = station;

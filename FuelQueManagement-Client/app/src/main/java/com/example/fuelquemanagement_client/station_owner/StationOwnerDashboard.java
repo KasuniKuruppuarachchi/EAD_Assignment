@@ -16,29 +16,21 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.fuelquemanagement_client.LoginScreen;
 import com.example.fuelquemanagement_client.MainActivity;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.FuelStation;
-import com.example.fuelquemanagement_client.vehicle_owner.JoinQueue;
-import com.example.fuelquemanagement_client.vehicle_owner.VehicleOwnerDashboard;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * The StationOwnerDashboard class facilitates the Station Owner see a dashboard view for the Fuel Station including fuel status

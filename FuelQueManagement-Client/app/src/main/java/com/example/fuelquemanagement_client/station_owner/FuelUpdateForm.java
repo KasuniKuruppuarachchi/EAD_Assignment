@@ -31,17 +31,14 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.fuelquemanagement_client.LoginScreen;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
 import com.example.fuelquemanagement_client.models.FuelStation;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
