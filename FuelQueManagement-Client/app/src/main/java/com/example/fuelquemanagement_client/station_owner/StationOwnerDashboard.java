@@ -228,6 +228,24 @@ public class StationOwnerDashboard extends AppCompatActivity {
                         };
                         // sending the POST Request
                         requestQueue.add(stringRequest);
+
+                        if(fuelType.equals("Petrol")) {
+                            if(status.equals("Available")) {
+                                loaded_fuel_station.setPetrolStatus(true);
+                            } else {
+                                loaded_fuel_station.setPetrolStatus(false);
+                            }
+                        } else {
+                            if(status.equals("Available")) {
+                                loaded_fuel_station.setDieselStatus(true);
+                            } else {
+                                loaded_fuel_station.setDieselStatus(false);
+                            }
+                        }
+
+                        Intent intent = new Intent(StationOwnerDashboard.this, StationOwnerDashboard.class);
+                        intent.putExtra(Constants.STATION, loaded_fuel_station);
+                        startActivity(intent);
                     }
                 })
                 .setIcon(R.drawable.warning)
