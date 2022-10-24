@@ -33,6 +33,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.fuelquemanagement_client.R;
 import com.example.fuelquemanagement_client.constants.Constants;
+import com.example.fuelquemanagement_client.database.InputValidatorHelper;
 import com.example.fuelquemanagement_client.models.FuelStation;
 
 import org.json.JSONException;
@@ -85,11 +86,17 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                postFuelUpdate();
-                try {
-                    findFuelStationById(stationID);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                // Checks for validations
+                boolean checks = checkValidations();
+                if(checks){
+                    postFuelUpdate();
+                    try {
+                        findFuelStationById(stationID);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(FuelUpdateForm.this, Constants.ERROR, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -237,7 +244,7 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
 
     // find and retrieve the object of the fuel station which is owned by the logged station owner
     public void findFuelStationById(String stationId) throws InterruptedException {
-        Thread.sleep(1500);
+        Thread.sleep(2500);
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = Constants.BASE_URL + "/FuelStation/";
@@ -284,5 +291,29 @@ public class FuelUpdateForm extends AppCompatActivity implements AdapterView.OnI
                 });
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    // Function to check input field validations
+    public boolean checkValidations() {
+        InputValidatorHelper inputValidatorHelper = new InputValidatorHelper();
+
+        boolean save = true;
+
+        if(inputValidatorHelper.isNullOrEmpty(et_fuel_amount.getText().toString())) {
+            Toast.makeText(this, "Fuel Amount should not be empty!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(inputValidatorHelper.isNullOrEmpty(tv_arrival_date.getText().toString())) {
+            Toast.makeText(this, "Arrival Date should not be empty!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(inputValidatorHelper.isNullOrEmpty(tv_arrival_time.getText().toString())) {
+            Toast.makeText(this, "Arrival Time should not be empty!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return save;
     }
 }
