@@ -162,7 +162,9 @@ public class LoginScreen extends AppCompatActivity implements View.OnClickListen
                                         singleObject.getString("stationOwner"),
                                         singleObject.getString("lastModified"),
                                         singleObject.getBoolean("dieselStatus"),
-                                        singleObject.getBoolean("petrolStatus")
+                                        singleObject.getBoolean("petrolStatus"),
+                                        singleObject.getInt("totalDiesel"),
+                                        singleObject.getInt("totalPetrol")
                                 );
                                 stations.add(fuelStation);
                                 Log.e("api", "onResponse: " + stations.size());
